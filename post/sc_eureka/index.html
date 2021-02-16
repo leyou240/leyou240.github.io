@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>SpringCloud源码| eureka源码 | </title>
+    <meta property="og:title" content="SpringCloud源码| eureka源码 - ">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-12-13T21:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-12-13T21:00:00&#43;08:00'>
+        
+    <meta name="Keywords" content="乐忧,java,博客,项目管理,python,软件架构">
+    <meta name="description" content="SpringCloud源码| eureka源码">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://leyou240.github.io/post/sc_eureka/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://leyou240.github.io/">
+                        
+                    </a>
+                
+                <p class="description">专注于Java、软件架构、移动互联网、项目管理、Go语言(golang)等</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://leyou240.github.io/">首页</a>
+                    
+                    <a  href="http://leyou240.github.io/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#eureka-server启动流程">eureka server启动流程</a></li>
+    <li><a href="#服务注册信息的获取接口applicationsresourcegetcontainers">服务注册信息的获取接口ApplicationsResource#getContainers</a></li>
+    <li><a href="#增量注册表">增量注册表</a>
+      <ul>
+        <li><a href="#故障摘除">故障摘除</a></li>
+        <li><a href="#eureka集群注册表同步机制">eureka集群注册表同步机制</a></li>
+        <li><a href="#spring-cloud-eureka-server注解式启动">spring-cloud-eureka-server注解式启动</a></li>
+        <li><a href="#spring-cloud-eureka-client注解式启动">spring-cloud-eureka-client注解式启动</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">SpringCloud源码| eureka源码</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年12月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/springcloud%E6%BA%90%E7%A0%81'>SpringCloud源码</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <h2 id="eureka-server启动流程">eureka server启动流程</h2>
+<p>EurekaBootStrap#contextInitialized(ServletContextEvent)  方法进行初始化</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">contextInitialized</span><span style="color:#f92672">(</span>ServletContextEvent event<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">//1、初始化eureka相关环境
+</span><span style="color:#75715e"></span>        initEurekaEnvironment<span style="color:#f92672">();</span>
+        <span style="color:#75715e">//2、初始化eureka的serverContext
+</span><span style="color:#75715e"></span>        initEurekaServerContext<span style="color:#f92672">();</span>
+
+        ServletContext sc <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span><span style="color:#a6e22e">getServletContext</span><span style="color:#f92672">();</span>
+        sc<span style="color:#f92672">.</span><span style="color:#a6e22e">setAttribute</span><span style="color:#f92672">(</span>EurekaServerContext<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">(),</span> serverContext<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">error</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Cannot bootstrap eureka server :&#34;</span><span style="color:#f92672">,</span> e<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> RuntimeException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Cannot bootstrap eureka server :&#34;</span><span style="color:#f92672">,</span> e<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Users can override to initialize the environment themselves.
+</span><span style="color:#75715e">     */</span>
+<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initEurekaEnvironment</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Setting the eureka configuration..&#34;</span><span style="color:#f92672">);</span>
+
+    AbstractConfiguration configInstance <span style="color:#f92672">=</span> ConfigurationManager<span style="color:#f92672">.</span><span style="color:#a6e22e">getConfigInstance</span><span style="color:#f92672">();</span>
+    String dataCenter <span style="color:#f92672">=</span> configInstance<span style="color:#f92672">.</span><span style="color:#a6e22e">getString</span><span style="color:#f92672">(</span>EUREKA_DATACENTER<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>dataCenter <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Eureka data center value eureka.datacenter is not set, defaulting to default&#34;</span><span style="color:#f92672">);</span>
+        configInstance<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span>ARCHAIUS_DEPLOYMENT_DATACENTER<span style="color:#f92672">,</span> DEFAULT<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+        configInstance<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span>ARCHAIUS_DEPLOYMENT_DATACENTER<span style="color:#f92672">,</span> dataCenter<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+    String environment <span style="color:#f92672">=</span> configInstance<span style="color:#f92672">.</span><span style="color:#a6e22e">getString</span><span style="color:#f92672">(</span>EUREKA_ENVIRONMENT<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>environment <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        configInstance<span style="color:#f92672">.</span><span style="color:#a6e22e">setProperty</span><span style="color:#f92672">(</span>ARCHAIUS_DEPLOYMENT_ENVIRONMENT<span style="color:#f92672">,</span> TEST<span style="color:#f92672">);</span>
+        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Eureka environment value eureka.environment is not set, defaulting to test&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>ConfigurationManager是一个double check+volatile实现的单例模式，并且其中所有的相关配置通过接口来实现。具体的实现类中，硬编码配置项名称，默认值等</p>
+<p>初始化EurekaServerContext，包含大致7个步骤</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * init hook for server context. Override for custom logic.
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initEurekaServerContext</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 1、加载eureka-server.properties的数据
+</span><span style="color:#75715e"></span>    EurekaServerConfig eurekaServerConfig <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultEurekaServerConfig<span style="color:#f92672">();</span>
+
+    <span style="color:#75715e">// For backward compatibility
+</span><span style="color:#75715e"></span>    JsonXStream<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">().</span><span style="color:#a6e22e">registerConverter</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> V1AwareInstanceInfoConverter<span style="color:#f92672">(),</span> XStream<span style="color:#f92672">.</span><span style="color:#a6e22e">PRIORITY_VERY_HIGH</span><span style="color:#f92672">);</span>
+    XmlXStream<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">().</span><span style="color:#a6e22e">registerConverter</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> V1AwareInstanceInfoConverter<span style="color:#f92672">(),</span> XStream<span style="color:#f92672">.</span><span style="color:#a6e22e">PRIORITY_VERY_HIGH</span><span style="color:#f92672">);</span>
+
+    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Initializing the eureka client...&#34;</span><span style="color:#f92672">);</span>
+    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span>eurekaServerConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">getJsonCodecName</span><span style="color:#f92672">());</span>
+    ServerCodecs serverCodecs <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultServerCodecs<span style="color:#f92672">(</span>eurekaServerConfig<span style="color:#f92672">);</span>
+    <span style="color:#75715e">//2、初始化eureka server
+</span><span style="color:#75715e"></span>    ApplicationInfoManager applicationInfoManager <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>eurekaClient <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        EurekaInstanceConfig instanceConfig <span style="color:#f92672">=</span> isCloud<span style="color:#f92672">(</span>ConfigurationManager<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeploymentContext</span><span style="color:#f92672">())</span>
+                <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> CloudInstanceConfig<span style="color:#f92672">()</span>
+                <span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> MyDataCenterInstanceConfig<span style="color:#f92672">();</span>
+        
+        applicationInfoManager <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ApplicationInfoManager<span style="color:#f92672">(</span>
+                instanceConfig<span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> EurekaConfigBasedInstanceInfoProvider<span style="color:#f92672">(</span>instanceConfig<span style="color:#f92672">).</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span>
+        
+        EurekaClientConfig eurekaClientConfig <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultEurekaClientConfig<span style="color:#f92672">();</span>
+        eurekaClient <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DiscoveryClient<span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">,</span> eurekaClientConfig<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+        applicationInfoManager <span style="color:#f92672">=</span> eurekaClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getApplicationInfoManager</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">//3、构造注册相关的组件
+</span><span style="color:#75715e"></span>    PeerAwareInstanceRegistry registry<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>isAws<span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">.</span><span style="color:#a6e22e">getInfo</span><span style="color:#f92672">()))</span> <span style="color:#f92672">{</span>
+        registry <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AwsInstanceRegistry<span style="color:#f92672">(</span>
+                eurekaServerConfig<span style="color:#f92672">,</span>
+                eurekaClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getEurekaClientConfig</span><span style="color:#f92672">(),</span>
+                serverCodecs<span style="color:#f92672">,</span>
+                eurekaClient
+        <span style="color:#f92672">);</span>
+        awsBinder <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AwsBinderDelegate<span style="color:#f92672">(</span>eurekaServerConfig<span style="color:#f92672">,</span> eurekaClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getEurekaClientConfig</span><span style="color:#f92672">(),</span> registry<span style="color:#f92672">,</span> applicationInfoManager<span style="color:#f92672">);</span>
+        awsBinder<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+        registry <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PeerAwareInstanceRegistryImpl<span style="color:#f92672">(</span>
+                eurekaServerConfig<span style="color:#f92672">,</span>
+                eurekaClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getEurekaClientConfig</span><span style="color:#f92672">(),</span>
+                serverCodecs<span style="color:#f92672">,</span>
+                eurekaClient
+        <span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">//4、构造peer节点同步组件
+</span><span style="color:#75715e"></span>    PeerEurekaNodes peerEurekaNodes <span style="color:#f92672">=</span> getPeerEurekaNodes<span style="color:#f92672">(</span>
+            registry<span style="color:#f92672">,</span>
+            eurekaServerConfig<span style="color:#f92672">,</span>
+            eurekaClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getEurekaClientConfig</span><span style="color:#f92672">(),</span>
+            serverCodecs<span style="color:#f92672">,</span>
+            applicationInfoManager
+    <span style="color:#f92672">);</span>
+    <span style="color:#75715e">//5、完成上下文的创建
+</span><span style="color:#75715e"></span>    serverContext <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultEurekaServerContext<span style="color:#f92672">(</span>
+            eurekaServerConfig<span style="color:#f92672">,</span>
+            serverCodecs<span style="color:#f92672">,</span>
+            registry<span style="color:#f92672">,</span>
+            peerEurekaNodes<span style="color:#f92672">,</span>
+            applicationInfoManager
+    <span style="color:#f92672">);</span>
+
+    EurekaServerContextHolder<span style="color:#f92672">.</span><span style="color:#a6e22e">initialize</span><span style="color:#f92672">(</span>serverContext<span style="color:#f92672">);</span>
+
+    serverContext<span style="color:#f92672">.</span><span style="color:#a6e22e">initialize</span><span style="color:#f92672">();</span>
+    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Initialized server context&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#75715e">//6、同步相邻节点的信息，从相邻eureka节点拷贝注册信息
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Copy registry from neighboring eureka node
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> registryCount <span style="color:#f92672">=</span> registry<span style="color:#f92672">.</span><span style="color:#a6e22e">syncUp</span><span style="color:#f92672">();</span>
+    registry<span style="color:#f92672">.</span><span style="color:#a6e22e">openForTraffic</span><span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">,</span> registryCount<span style="color:#f92672">);</span>
+    <span style="color:#75715e">//7、注册所有的监控统计项
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Register all monitoring statistics.
+</span><span style="color:#75715e"></span>    EurekaMonitors<span style="color:#f92672">.</span><span style="color:#a6e22e">registerAllStats</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>1、加载eureka-server.properties的数据，初始化EurekaServerConfig</p>
+<p>2、初始化ApplicationInfoManager及eurekaClient，其中用到的InstanceInfo使用了builder模式构造复杂的实例对象</p>
+<p>(1)读取相关配置EurekaInstanceConfig和InstanceInfo</p>
+<p>(2)根据配置，处理是否抓取注册表</p>
+<p>(3)初始化3个线程池：调度线程池、心跳线程池、缓存刷新线程池</p>
+<p>3、处理注册相关的事情</p>
+<p>(1)创建PeerAwareInstanceRegistry内部比较重要的是MeasuredRate，其lastBucket统计上一分钟的心跳，currentBucket统计当前一分钟心跳。此组件用做eureka保护模式的重要判断依据</p>
+<p>(2)构造peer节点同步组件，用以集群同步</p>
+<p>(3)DefaultEurekaServerContext创建，并且启动服务注册，从相邻节点同步，注册监控统计项</p>
+<p>![](eureka server启动的流程图.png)</p>
+<p>再从eureka的example中例子</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExampleEurekaClient</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ApplicationInfoManager applicationInfoManager<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> EurekaClient eurekaClient<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">synchronized</span> ApplicationInfoManager <span style="color:#a6e22e">initializeApplicationInfoManager</span><span style="color:#f92672">(</span>EurekaInstanceConfig instanceConfig<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>applicationInfoManager <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            InstanceInfo instanceInfo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> EurekaConfigBasedInstanceInfoProvider<span style="color:#f92672">(</span>instanceConfig<span style="color:#f92672">).</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+            applicationInfoManager <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ApplicationInfoManager<span style="color:#f92672">(</span>instanceConfig<span style="color:#f92672">,</span> instanceInfo<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">return</span> applicationInfoManager<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">synchronized</span> EurekaClient <span style="color:#a6e22e">initializeEurekaClient</span><span style="color:#f92672">(</span>ApplicationInfoManager applicationInfoManager<span style="color:#f92672">,</span> EurekaClientConfig clientConfig<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>eurekaClient <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            eurekaClient <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DiscoveryClient<span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">,</span> clientConfig<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">return</span> eurekaClient<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sendRequestToServiceUsingEureka</span><span style="color:#f92672">(</span>EurekaClient eurekaClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// initialize the client
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// this is the vip address for the example service to talk to as defined in conf/sample-eureka-service.properties
+</span><span style="color:#75715e"></span>        String vipAddress <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;sampleservice.mydomain.net&#34;</span><span style="color:#f92672">;</span>
+
+        InstanceInfo nextServerInfo <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            nextServerInfo <span style="color:#f92672">=</span> eurekaClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getNextServerFromEureka</span><span style="color:#f92672">(</span>vipAddress<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Cannot get an instance of example service to talk to from eureka&#34;</span><span style="color:#f92672">);</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">exit</span><span style="color:#f92672">(-</span>1<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Found an instance of example service to talk to from eureka: &#34;</span>
+                <span style="color:#f92672">+</span> nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getVIPAddress</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getPort</span><span style="color:#f92672">());</span>
+
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;healthCheckUrl: &#34;</span> <span style="color:#f92672">+</span> nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getHealthCheckUrl</span><span style="color:#f92672">());</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;override: &#34;</span> <span style="color:#f92672">+</span> nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getOverriddenStatus</span><span style="color:#f92672">());</span>
+
+        Socket s <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Socket<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">int</span> serverPort <span style="color:#f92672">=</span> nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getPort</span><span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            s<span style="color:#f92672">.</span><span style="color:#a6e22e">connect</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> InetSocketAddress<span style="color:#f92672">(</span>nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getHostName</span><span style="color:#f92672">(),</span> serverPort<span style="color:#f92672">));</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Could not connect to the server :&#34;</span>
+                    <span style="color:#f92672">+</span> nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getHostName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; at port &#34;</span> <span style="color:#f92672">+</span> serverPort<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Could not connect to the server :&#34;</span>
+                    <span style="color:#f92672">+</span> nextServerInfo<span style="color:#f92672">.</span><span style="color:#a6e22e">getHostName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; at port &#34;</span> <span style="color:#f92672">+</span> serverPort <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;due to Exception &#34;</span> <span style="color:#f92672">+</span> e<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            String request <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;FOO &#34;</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> Date<span style="color:#f92672">();</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Connected to server. Sending a sample request: &#34;</span> <span style="color:#f92672">+</span> request<span style="color:#f92672">);</span>
+
+            PrintStream out <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PrintStream<span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">getOutputStream</span><span style="color:#f92672">());</span>
+            out<span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>request<span style="color:#f92672">);</span>
+
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Waiting for server response..&#34;</span><span style="color:#f92672">);</span>
+            BufferedReader rd <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> InputStreamReader<span style="color:#f92672">(</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">getInputStream</span><span style="color:#f92672">()));</span>
+            String str <span style="color:#f92672">=</span> rd<span style="color:#f92672">.</span><span style="color:#a6e22e">readLine</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>str <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Received response from server: &#34;</span> <span style="color:#f92672">+</span> str<span style="color:#f92672">);</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Exiting the client. Demo over..&#34;</span><span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+            rd<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        ExampleEurekaClient sampleClient <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ExampleEurekaClient<span style="color:#f92672">();</span>
+
+        <span style="color:#75715e">// create the client
+</span><span style="color:#75715e"></span>        ApplicationInfoManager applicationInfoManager <span style="color:#f92672">=</span> initializeApplicationInfoManager<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> MyDataCenterInstanceConfig<span style="color:#f92672">());</span>
+        EurekaClient client <span style="color:#f92672">=</span> initializeEurekaClient<span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> DefaultEurekaClientConfig<span style="color:#f92672">());</span>
+
+        <span style="color:#75715e">// use the client
+</span><span style="color:#75715e"></span>        sampleClient<span style="color:#f92672">.</span><span style="color:#a6e22e">sendRequestToServiceUsingEureka</span><span style="color:#f92672">(</span>client<span style="color:#f92672">);</span>
+
+
+        <span style="color:#75715e">// shutdown the client
+</span><span style="color:#75715e"></span>        eurekaClient<span style="color:#f92672">.</span><span style="color:#a6e22e">shutdown</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>client启动流程</p>
+<p>（1）读取eureka-client.properties配置文件，形成一个服务实例的配置，基于接口对外提供服务实例的配置项的读取</p>
+<p>（2）基于服务实例的配置，构造了一个服务实例（InstanceInfo）</p>
+<p>（3）基于服务实例的配置和服务实例，构造了一个服务实例管理器（ApplicationInfoManager）</p>
+<p>（4）读取eureka-client.properites配置文件，形成一个eureka client的配置，接口接口对外提供eureka client的配置项的读取</p>
+<p>（5）基于eureka client配置，和服务实例管理器，来构造了一个EurekaClient（DiscoveryClient），保存了一些配置，处理服务的注册和注册表的抓取，启动了几个线程池，启动了网络通信组件，启动了一些调度任务，注册了监控项</p>
+<p>（6）DiscoveryClient内部依赖了一个InstanceInfoReplicator，进行服务注册  服务注册表实际上就是一个ConcurrentHashMap</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExampleEurekaService</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ApplicationInfoManager applicationInfoManager<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> EurekaClient eurekaClient<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">synchronized</span> ApplicationInfoManager <span style="color:#a6e22e">initializeApplicationInfoManager</span><span style="color:#f92672">(</span>EurekaInstanceConfig instanceConfig<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>applicationInfoManager <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            InstanceInfo instanceInfo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> EurekaConfigBasedInstanceInfoProvider<span style="color:#f92672">(</span>instanceConfig<span style="color:#f92672">).</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+            applicationInfoManager <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ApplicationInfoManager<span style="color:#f92672">(</span>instanceConfig<span style="color:#f92672">,</span> instanceInfo<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">return</span> applicationInfoManager<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">synchronized</span> EurekaClient <span style="color:#a6e22e">initializeEurekaClient</span><span style="color:#f92672">(</span>ApplicationInfoManager applicationInfoManager<span style="color:#f92672">,</span> EurekaClientConfig clientConfig<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>eurekaClient <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            eurekaClient <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DiscoveryClient<span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">,</span> clientConfig<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">return</span> eurekaClient<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+
+        DynamicPropertyFactory configInstance <span style="color:#f92672">=</span> com<span style="color:#f92672">.</span><span style="color:#a6e22e">netflix</span><span style="color:#f92672">.</span><span style="color:#a6e22e">config</span><span style="color:#f92672">.</span><span style="color:#a6e22e">DynamicPropertyFactory</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">();</span>
+        ApplicationInfoManager applicationInfoManager <span style="color:#f92672">=</span> initializeApplicationInfoManager<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> MyDataCenterInstanceConfig<span style="color:#f92672">());</span>
+        EurekaClient eurekaClient <span style="color:#f92672">=</span> initializeEurekaClient<span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> DefaultEurekaClientConfig<span style="color:#f92672">());</span>
+
+        ExampleServiceBase exampleServiceBase <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ExampleServiceBase<span style="color:#f92672">(</span>applicationInfoManager<span style="color:#f92672">,</span> eurekaClient<span style="color:#f92672">,</span> configInstance<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            exampleServiceBase<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// the stop calls shutdown on eurekaClient
+</span><span style="color:#75715e"></span>            exampleServiceBase<span style="color:#f92672">.</span><span style="color:#a6e22e">stop</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>服务端启动流程，仅仅增加服务端注册同步相关代码，其余与客户端启动一致</p>
+<h2 id="服务注册信息的获取接口applicationsresourcegetcontainers">服务注册信息的获取接口ApplicationsResource#getContainers</h2>
+<p>其使用了多级缓存以提高并发性能</p>
+<p>
+        <img class="mx-auto" alt="" src="eureka-server%e7%9a%84%e5%a4%9a%e7%ba%a7%e7%bc%93%e5%ad%98%e8%bf%87%e6%9c%9f%e6%9c%ba%e5%88%b6.png" />   
+    </p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ResponseCacheImpl<span style="color:#f92672">(</span>EurekaServerConfig serverConfig<span style="color:#f92672">,</span> ServerCodecs serverCodecs<span style="color:#f92672">,</span> AbstractInstanceRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">serverConfig</span> <span style="color:#f92672">=</span> serverConfig<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">serverCodecs</span> <span style="color:#f92672">=</span> serverCodecs<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">shouldUseReadOnlyResponseCache</span> <span style="color:#f92672">=</span> serverConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">shouldUseReadOnlyResponseCache</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">registry</span> <span style="color:#f92672">=</span> registry<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">long</span> responseCacheUpdateIntervalMs <span style="color:#f92672">=</span> serverConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">getResponseCacheUpdateIntervalMs</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">readWriteCacheMap</span> <span style="color:#f92672">=</span>
+            CacheBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">newBuilder</span><span style="color:#f92672">().</span><span style="color:#a6e22e">initialCapacity</span><span style="color:#f92672">(</span>serverConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">getInitialCapacityOfResponseCache</span><span style="color:#f92672">())</span>
+        	<span style="color:#75715e">//过期时间
+</span><span style="color:#75715e"></span>                    <span style="color:#f92672">.</span><span style="color:#a6e22e">expireAfterWrite</span><span style="color:#f92672">(</span>serverConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">getResponseCacheAutoExpirationInSeconds</span><span style="color:#f92672">(),</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">)</span>
+        	<span style="color:#75715e">//移除region相关的监听器
+</span><span style="color:#75715e"></span>                    <span style="color:#f92672">.</span><span style="color:#a6e22e">removalListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> RemovalListener<span style="color:#f92672">&lt;</span>Key<span style="color:#f92672">,</span> Value<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+                        <span style="color:#a6e22e">@Override</span>
+                        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onRemoval</span><span style="color:#f92672">(</span>RemovalNotification<span style="color:#f92672">&lt;</span>Key<span style="color:#f92672">,</span> Value<span style="color:#f92672">&gt;</span> notification<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                            Key removedKey <span style="color:#f92672">=</span> notification<span style="color:#f92672">.</span><span style="color:#a6e22e">getKey</span><span style="color:#f92672">();</span>
+                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>removedKey<span style="color:#f92672">.</span><span style="color:#a6e22e">hasRegions</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                                Key cloneWithNoRegions <span style="color:#f92672">=</span> removedKey<span style="color:#f92672">.</span><span style="color:#a6e22e">cloneWithoutRegions</span><span style="color:#f92672">();</span>
+                                regionSpecificKeys<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">(</span>cloneWithNoRegions<span style="color:#f92672">,</span> removedKey<span style="color:#f92672">);</span>
+                            <span style="color:#f92672">}</span>
+                        <span style="color:#f92672">}</span>
+                    <span style="color:#f92672">})</span>
+        	<span style="color:#75715e">//从注册表中获取注册信息
+</span><span style="color:#75715e"></span>                    <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> CacheLoader<span style="color:#f92672">&lt;</span>Key<span style="color:#f92672">,</span> Value<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+                        <span style="color:#a6e22e">@Override</span>
+                        <span style="color:#66d9ef">public</span> Value <span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>Key key<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>key<span style="color:#f92672">.</span><span style="color:#a6e22e">hasRegions</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                                Key cloneWithNoRegions <span style="color:#f92672">=</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">cloneWithoutRegions</span><span style="color:#f92672">();</span>
+                                regionSpecificKeys<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>cloneWithNoRegions<span style="color:#f92672">,</span> key<span style="color:#f92672">);</span>
+                            <span style="color:#f92672">}</span>
+                            <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>                            Value value <span style="color:#f92672">=</span> generatePayload<span style="color:#f92672">(</span>key<span style="color:#f92672">);</span>
+                            <span style="color:#66d9ef">return</span> value<span style="color:#f92672">;</span>
+                        <span style="color:#f92672">}</span>
+                    <span style="color:#f92672">});</span>
+
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>shouldUseReadOnlyResponseCache<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        timer<span style="color:#f92672">.</span><span style="color:#a6e22e">schedule</span><span style="color:#f92672">(</span>getCacheUpdateTask<span style="color:#f92672">(),</span>
+                <span style="color:#66d9ef">new</span> Date<span style="color:#f92672">(((</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">()</span> <span style="color:#f92672">/</span> responseCacheUpdateIntervalMs<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> responseCacheUpdateIntervalMs<span style="color:#f92672">)</span>
+                        <span style="color:#f92672">+</span> responseCacheUpdateIntervalMs<span style="color:#f92672">),</span>
+                responseCacheUpdateIntervalMs<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+        Monitors<span style="color:#f92672">.</span><span style="color:#a6e22e">registerObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Cannot register the JMX monitor for the InstanceRegistry&#34;</span><span style="color:#f92672">,</span> e<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">//定时从注册表更新readOnlyCacheMap
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> TimerTask <span style="color:#a6e22e">getCacheUpdateTask</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> TimerTask<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+            logger<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Updating the client cache from response cache&#34;</span><span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Key key <span style="color:#f92672">:</span> readOnlyCacheMap<span style="color:#f92672">.</span><span style="color:#a6e22e">keySet</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>logger<span style="color:#f92672">.</span><span style="color:#a6e22e">isDebugEnabled</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Updating the client cache from response cache for key : {} {} {} {}&#34;</span><span style="color:#f92672">,</span>
+                            key<span style="color:#f92672">.</span><span style="color:#a6e22e">getEntityType</span><span style="color:#f92672">(),</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">(),</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">getVersion</span><span style="color:#f92672">(),</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">getType</span><span style="color:#f92672">());</span>
+                <span style="color:#f92672">}</span>
+                <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+                    CurrentRequestVersion<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span>key<span style="color:#f92672">.</span><span style="color:#a6e22e">getVersion</span><span style="color:#f92672">());</span>
+                    Value cacheValue <span style="color:#f92672">=</span> readWriteCacheMap<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>key<span style="color:#f92672">);</span>
+                    Value currentCacheValue <span style="color:#f92672">=</span> readOnlyCacheMap<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>key<span style="color:#f92672">);</span>
+                    <span style="color:#75715e">//版本不一致时，更新
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>cacheValue <span style="color:#f92672">!=</span> currentCacheValue<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        readOnlyCacheMap<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>key<span style="color:#f92672">,</span> cacheValue<span style="color:#f92672">);</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable th<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">error</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Error while updating the client cache from response cache for key {}&#34;</span><span style="color:#f92672">,</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">toStringCompact</span><span style="color:#f92672">(),</span> th<span style="color:#f92672">);</span>
+                <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+                    CurrentRequestVersion<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">();</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">};</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>1、首先去readOnlyCacheMap中读，读到则返回。若没有则从readWriteCacheMap获取</p>
+<p>2、readWriteCacheMap没有，则从注册表中去获取。<strong>定时比较</strong>readWriteCacheMap和readOnlyCacheMap，不一致时将最新的值更新到readOnlyCacheMap。</p>
+<p>3、注册表在状态改变的时候，同步<strong>将对应的key从readWriteCacheMap清空</strong>。保证缓存最终一致性。此逻辑详见<strong>AbstractInstanceRegistry</strong>中的各方法对其调用</p>
+<h2 id="增量注册表">增量注册表</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AbstractInstanceRegistry</span> <span style="color:#66d9ef">implements</span> InstanceRegistry <span style="color:#f92672">{</span>
+    <span style="color:#75715e">//底层由一个队列实现
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//在注册表变更的时候，写入队列
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> ConcurrentLinkedQueue<span style="color:#f92672">&lt;</span>RecentlyChangedItem<span style="color:#f92672">&gt;</span> recentlyChangedQueue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcurrentLinkedQueue<span style="color:#f92672">&lt;</span>RecentlyChangedItem<span style="color:#f92672">&gt;();</span>
+    <span style="color:#75715e">//定时更新过期的增量注册表
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> TimerTask <span style="color:#a6e22e">getDeltaRetentionTask</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> TimerTask<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+
+            <span style="color:#a6e22e">@Override</span>
+            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+                Iterator<span style="color:#f92672">&lt;</span>RecentlyChangedItem<span style="color:#f92672">&gt;</span> it <span style="color:#f92672">=</span> recentlyChangedQueue<span style="color:#f92672">.</span><span style="color:#a6e22e">iterator</span><span style="color:#f92672">();</span>
+                <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>it<span style="color:#f92672">.</span><span style="color:#a6e22e">hasNext</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>it<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getLastUpdateTime</span><span style="color:#f92672">()</span> <span style="color:#f92672">&lt;</span>
+                            System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> serverConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">getRetentionTimeInMSInDeltaQueue</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                        it<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">();</span>
+                    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                        <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+
+        <span style="color:#f92672">};</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="故障摘除">故障摘除</h3>
+<p>AbstractInstanceRegistry#evict(long additionalLeaseMs)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Evicts everything in the instance registry that has expired, if expiry is enabled.
+</span><span style="color:#75715e">     *
+</span><span style="color:#75715e">     * @see com.netflix.eureka.lease.LeaseManager#evict()
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">evict</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        evict<span style="color:#f92672">(</span>0l<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">evict</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> additionalLeaseMs<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Running the evict task&#34;</span><span style="color:#f92672">);</span>
+
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>isLeaseExpirationEnabled<span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+            logger<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;DS: lease expiration is currently disabled.&#34;</span><span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#75715e">// We collect first all expired items, to evict them in random order. For large eviction sets,
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// if we do not that, we might wipe out whole apps before self preservation kicks in. By randomizing it,
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// the impact should be evenly distributed across all applications.
+</span><span style="color:#75715e"></span>        List<span style="color:#f92672">&lt;</span>Lease<span style="color:#f92672">&lt;</span>InstanceInfo<span style="color:#f92672">&gt;&gt;</span> expiredLeases <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Entry<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Lease<span style="color:#f92672">&lt;</span>InstanceInfo<span style="color:#f92672">&gt;&gt;&gt;</span> groupEntry <span style="color:#f92672">:</span> registry<span style="color:#f92672">.</span><span style="color:#a6e22e">entrySet</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+            Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Lease<span style="color:#f92672">&lt;</span>InstanceInfo<span style="color:#f92672">&gt;&gt;</span> leaseMap <span style="color:#f92672">=</span> groupEntry<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>leaseMap <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Entry<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Lease<span style="color:#f92672">&lt;</span>InstanceInfo<span style="color:#f92672">&gt;&gt;</span> leaseEntry <span style="color:#f92672">:</span> leaseMap<span style="color:#f92672">.</span><span style="color:#a6e22e">entrySet</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                    Lease<span style="color:#f92672">&lt;</span>InstanceInfo<span style="color:#f92672">&gt;</span> lease <span style="color:#f92672">=</span> leaseEntry<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
+                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>lease<span style="color:#f92672">.</span><span style="color:#a6e22e">isExpired</span><span style="color:#f92672">(</span>additionalLeaseMs<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span> lease<span style="color:#f92672">.</span><span style="color:#a6e22e">getHolder</span><span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        expiredLeases<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>lease<span style="color:#f92672">);</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#75715e">// To compensate for GC pauses or drifting local time, we need to use current registry size as a base for
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// triggering self-preservation. Without that we would wipe out full registry.
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> registrySize <span style="color:#f92672">=</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">)</span> getLocalRegistrySize<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">int</span> registrySizeThreshold <span style="color:#f92672">=</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">)</span> <span style="color:#f92672">(</span>registrySize <span style="color:#f92672">*</span> serverConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">getRenewalPercentThreshold</span><span style="color:#f92672">());</span>
+        <span style="color:#66d9ef">int</span> evictionLimit <span style="color:#f92672">=</span> registrySize <span style="color:#f92672">-</span> registrySizeThreshold<span style="color:#f92672">;</span>
+		<span style="color:#75715e">//每次最多摘除15%的实例，因为renewalPercentThreshold默认值是0.85
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> toEvict <span style="color:#f92672">=</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">min</span><span style="color:#f92672">(</span>expiredLeases<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">(),</span> evictionLimit<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>toEvict <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Evicting {} items (expired={}, evictionLimit={})&#34;</span><span style="color:#f92672">,</span> toEvict<span style="color:#f92672">,</span> expiredLeases<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">(),</span> evictionLimit<span style="color:#f92672">);</span>
+			<span style="color:#75715e">//使用随机算法，随机摘除故障实例
+</span><span style="color:#75715e"></span>            Random random <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Random<span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">());</span>
+            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> toEvict<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// Pick a random item (Knuth shuffle algorithm)
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">int</span> next <span style="color:#f92672">=</span> i <span style="color:#f92672">+</span> random<span style="color:#f92672">.</span><span style="color:#a6e22e">nextInt</span><span style="color:#f92672">(</span>expiredLeases<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> i<span style="color:#f92672">);</span>
+                Collections<span style="color:#f92672">.</span><span style="color:#a6e22e">swap</span><span style="color:#f92672">(</span>expiredLeases<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> next<span style="color:#f92672">);</span>
+                Lease<span style="color:#f92672">&lt;</span>InstanceInfo<span style="color:#f92672">&gt;</span> lease <span style="color:#f92672">=</span> expiredLeases<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span>
+
+                String appName <span style="color:#f92672">=</span> lease<span style="color:#f92672">.</span><span style="color:#a6e22e">getHolder</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getAppName</span><span style="color:#f92672">();</span>
+                String id <span style="color:#f92672">=</span> lease<span style="color:#f92672">.</span><span style="color:#a6e22e">getHolder</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getId</span><span style="color:#f92672">();</span>
+                EXPIRED<span style="color:#f92672">.</span><span style="color:#a6e22e">increment</span><span style="color:#f92672">();</span>
+                logger<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;DS: Registry: expired lease for {}/{}&#34;</span><span style="color:#f92672">,</span> appName<span style="color:#f92672">,</span> id<span style="color:#f92672">);</span>
+                internalCancel<span style="color:#f92672">(</span>appName<span style="color:#f92672">,</span> id<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><h3 id="eureka集群注册表同步机制">eureka集群注册表同步机制</h3>
+<p>PeerEurekaNode中的batchingDispatcher和nonBatchingDispatcher  负责调度</p>
+<p>AcceptorExecutor负责从队列中拿出任务来执行</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PeerEurekaNode</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> TaskDispatcher<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> ReplicationTask<span style="color:#f92672">&gt;</span> batchingDispatcher<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> TaskDispatcher<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> ReplicationTask<span style="color:#f92672">&gt;</span> nonBatchingDispatcher<span style="color:#f92672">;</span>
+     <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">PeerEurekaNode</span><span style="color:#f92672">(</span>PeerAwareInstanceRegistry registry<span style="color:#f92672">,</span> String targetHost<span style="color:#f92672">,</span> String serviceUrl<span style="color:#f92672">,</span> HttpReplicationClient replicationClient<span style="color:#f92672">,</span> EurekaServerConfig config<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>registry<span style="color:#f92672">,</span> targetHost<span style="color:#f92672">,</span> serviceUrl<span style="color:#f92672">,</span> replicationClient<span style="color:#f92672">,</span> config<span style="color:#f92672">,</span> BATCH_SIZE<span style="color:#f92672">,</span> MAX_BATCHING_DELAY_MS<span style="color:#f92672">,</span> RETRY_SLEEP_TIME_MS<span style="color:#f92672">,</span> SERVER_UNAVAILABLE_SLEEP_TIME_MS<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#75715e">/* For testing */</span> PeerEurekaNode<span style="color:#f92672">(</span>PeerAwareInstanceRegistry registry<span style="color:#f92672">,</span> String targetHost<span style="color:#f92672">,</span> String serviceUrl<span style="color:#f92672">,</span>
+                                     HttpReplicationClient replicationClient<span style="color:#f92672">,</span> EurekaServerConfig config<span style="color:#f92672">,</span>
+                                     <span style="color:#66d9ef">int</span> batchSize<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> maxBatchingDelayMs<span style="color:#f92672">,</span>
+                                     <span style="color:#66d9ef">long</span> retrySleepTimeMs<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> serverUnavailableSleepTimeMs<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">registry</span> <span style="color:#f92672">=</span> registry<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">targetHost</span> <span style="color:#f92672">=</span> targetHost<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">replicationClient</span> <span style="color:#f92672">=</span> replicationClient<span style="color:#f92672">;</span>
+
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">serviceUrl</span> <span style="color:#f92672">=</span> serviceUrl<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">config</span> <span style="color:#f92672">=</span> config<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">maxProcessingDelayMs</span> <span style="color:#f92672">=</span> config<span style="color:#f92672">.</span><span style="color:#a6e22e">getMaxTimeForReplication</span><span style="color:#f92672">();</span>
+
+        String batcherName <span style="color:#f92672">=</span> getBatcherName<span style="color:#f92672">();</span>
+        ReplicationTaskProcessor taskProcessor <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReplicationTaskProcessor<span style="color:#f92672">(</span>targetHost<span style="color:#f92672">,</span> replicationClient<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">batchingDispatcher</span> <span style="color:#f92672">=</span> TaskDispatchers<span style="color:#f92672">.</span><span style="color:#a6e22e">createBatchingTaskDispatcher</span><span style="color:#f92672">(</span>
+                batcherName<span style="color:#f92672">,</span>
+                config<span style="color:#f92672">.</span><span style="color:#a6e22e">getMaxElementsInPeerReplicationPool</span><span style="color:#f92672">(),</span>
+                batchSize<span style="color:#f92672">,</span>
+                config<span style="color:#f92672">.</span><span style="color:#a6e22e">getMaxThreadsForPeerReplication</span><span style="color:#f92672">(),</span>
+                maxBatchingDelayMs<span style="color:#f92672">,</span>
+                serverUnavailableSleepTimeMs<span style="color:#f92672">,</span>
+                retrySleepTimeMs<span style="color:#f92672">,</span>
+                taskProcessor
+        <span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">nonBatchingDispatcher</span> <span style="color:#f92672">=</span> TaskDispatchers<span style="color:#f92672">.</span><span style="color:#a6e22e">createNonBatchingTaskDispatcher</span><span style="color:#f92672">(</span>
+                targetHost<span style="color:#f92672">,</span>
+                config<span style="color:#f92672">.</span><span style="color:#a6e22e">getMaxElementsInStatusReplicationPool</span><span style="color:#f92672">(),</span>
+                config<span style="color:#f92672">.</span><span style="color:#a6e22e">getMaxThreadsForStatusReplication</span><span style="color:#f92672">(),</span>
+                maxBatchingDelayMs<span style="color:#f92672">,</span>
+                serverUnavailableSleepTimeMs<span style="color:#f92672">,</span>
+                retrySleepTimeMs<span style="color:#f92672">,</span>
+                taskProcessor
+        <span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Sends the registration information of {@link InstanceInfo} receiving by
+</span><span style="color:#75715e">     * this node to the peer node represented by this class.
+</span><span style="color:#75715e">     *
+</span><span style="color:#75715e">     * @param info
+</span><span style="color:#75715e">     *            the instance information {@link InstanceInfo} of any instance
+</span><span style="color:#75715e">     *            that is send to this instance.
+</span><span style="color:#75715e">     * @throws Exception
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">register</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> InstanceInfo info<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">long</span> expiryTime <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> getLeaseRenewalOf<span style="color:#f92672">(</span>info<span style="color:#f92672">);</span>
+        batchingDispatcher<span style="color:#f92672">.</span><span style="color:#a6e22e">process</span><span style="color:#f92672">(</span>
+                taskId<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;register&#34;</span><span style="color:#f92672">,</span> info<span style="color:#f92672">),</span>
+                <span style="color:#66d9ef">new</span> InstanceReplicationTask<span style="color:#f92672">(</span>targetHost<span style="color:#f92672">,</span> Action<span style="color:#f92672">.</span><span style="color:#a6e22e">Register</span><span style="color:#f92672">,</span> info<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    <span style="color:#a6e22e">@Override</span>
+                    <span style="color:#66d9ef">public</span> EurekaHttpResponse<span style="color:#f92672">&lt;</span>Void<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">execute</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+                        <span style="color:#66d9ef">return</span> replicationClient<span style="color:#f92672">.</span><span style="color:#a6e22e">register</span><span style="color:#f92672">(</span>info<span style="color:#f92672">);</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">},</span>
+                expiryTime
+        <span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AcceptorExecutor</span><span style="color:#f92672">&lt;</span>ID<span style="color:#f92672">,</span> T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> BlockingQueue<span style="color:#f92672">&lt;</span>TaskHolder<span style="color:#f92672">&lt;</span>ID<span style="color:#f92672">,</span> T<span style="color:#f92672">&gt;&gt;</span> acceptorQueue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LinkedBlockingQueue<span style="color:#f92672">&lt;&gt;();</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> BlockingDeque<span style="color:#f92672">&lt;</span>TaskHolder<span style="color:#f92672">&lt;</span>ID<span style="color:#f92672">,</span> T<span style="color:#f92672">&gt;&gt;</span> reprocessQueue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LinkedBlockingDeque<span style="color:#f92672">&lt;&gt;();</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BatchWorkerRunnable</span><span style="color:#f92672">&lt;</span>ID<span style="color:#f92672">,</span> T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> WorkerRunnable<span style="color:#f92672">&lt;</span>ID<span style="color:#f92672">,</span> T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+        BatchWorkerRunnable<span style="color:#f92672">(</span>String workerName<span style="color:#f92672">,</span>
+                            AtomicBoolean isShutdown<span style="color:#f92672">,</span>
+                            TaskExecutorMetrics metrics<span style="color:#f92672">,</span>
+                            TaskProcessor<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> processor<span style="color:#f92672">,</span>
+                            AcceptorExecutor<span style="color:#f92672">&lt;</span>ID<span style="color:#f92672">,</span> T<span style="color:#f92672">&gt;</span> acceptorExecutor<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>workerName<span style="color:#f92672">,</span> isShutdown<span style="color:#f92672">,</span> metrics<span style="color:#f92672">,</span> processor<span style="color:#f92672">,</span> acceptorExecutor<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">while</span> <span style="color:#f92672">(!</span>isShutdown<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                    List<span style="color:#f92672">&lt;</span>TaskHolder<span style="color:#f92672">&lt;</span>ID<span style="color:#f92672">,</span> T<span style="color:#f92672">&gt;&gt;</span> holders <span style="color:#f92672">=</span> getWork<span style="color:#f92672">();</span>
+                    metrics<span style="color:#f92672">.</span><span style="color:#a6e22e">registerExpiryTimes</span><span style="color:#f92672">(</span>holders<span style="color:#f92672">);</span>
+
+                    List<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> tasks <span style="color:#f92672">=</span> getTasksOf<span style="color:#f92672">(</span>holders<span style="color:#f92672">);</span>
+                    ProcessingResult result <span style="color:#f92672">=</span> processor<span style="color:#f92672">.</span><span style="color:#a6e22e">process</span><span style="color:#f92672">(</span>tasks<span style="color:#f92672">);</span>
+                    <span style="color:#66d9ef">switch</span> <span style="color:#f92672">(</span>result<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        <span style="color:#66d9ef">case</span> Success<span style="color:#f92672">:</span>
+                            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                        <span style="color:#66d9ef">case</span> Congestion<span style="color:#f92672">:</span>
+                        <span style="color:#66d9ef">case</span> TransientError<span style="color:#f92672">:</span>
+                            taskDispatcher<span style="color:#f92672">.</span><span style="color:#a6e22e">reprocess</span><span style="color:#f92672">(</span>holders<span style="color:#f92672">,</span> result<span style="color:#f92672">);</span>
+                            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                        <span style="color:#66d9ef">case</span> PermanentError<span style="color:#f92672">:</span>
+                            logger<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Discarding {} tasks of {} due to permanent error&#34;</span><span style="color:#f92672">,</span> holders<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">(),</span> workerName<span style="color:#f92672">);</span>
+                    <span style="color:#f92672">}</span>
+                    metrics<span style="color:#f92672">.</span><span style="color:#a6e22e">registerTaskResult</span><span style="color:#f92672">(</span>result<span style="color:#f92672">,</span> tasks<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">());</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// Ignore
+</span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// Safe-guard, so we never exit this loop in an uncontrolled way.
+</span><span style="color:#75715e"></span>                logger<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Discovery WorkerThread error&#34;</span><span style="color:#f92672">,</span> e<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+</code></pre></div><p>![](eureka server同步任务批处理机制.png)</p>
+<h3 id="spring-cloud-eureka-server注解式启动">spring-cloud-eureka-server注解式启动</h3>
+<p>@EnableEurekaServer注解，springboot启动以后，将eureka server启动起来。</p>
+<p>EurekaServerAutoConfiguration使用spring boot的auto configuration机制，触发EurekaServerAutoConfiguration的执行。将eureka server需要的类，统统交由spring bean来进行注入</p>
+<p>然后通过EurekaServerInitializerConfiguration来进行启动。</p>
+<h3 id="spring-cloud-eureka-client注解式启动">spring-cloud-eureka-client注解式启动</h3>
+<p>EurekaClientConfigBean配置文件读取配置</p>
+<p>EurekaClientAutoConfiguration注入相关的类到spring容器中</p>
+<p>EurekaAutoServiceRegistration重写了eureka client默认的注册逻辑，将原来InstanceInfoReplicator中的注册逻辑进行进一步的封装及定制。client启动以后就进行注册，不是eureka默认的40秒以后再注册。并且可以配置初始化注册状态</p>
+<p>总结：@EnableEurekaClient，触发了一个EurekaClientAutoConfiguration类的执行，完成从application.yml中读取配置，完成DiscoveryClient的初始化和启动，通过自己额外加的一些代码，一启动，直接触发一次register()服务注册，向eureka server完成一次注册。</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://leyou240.github.io/"></a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://leyou240.github.io/post/sc_eureka/">http://leyou240.github.io/post/sc_eureka/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/sc_feign/">SpringCloud源码| feign源码</a></li>
+        
+        <li><a href="/post/sc_hystrix/">SpringCloud源码| hystrix源码</a></li>
+        
+        <li><a href="/post/sc_ribbon/">SpringCloud源码| ribbon源码</a></li>
+        
+        <li><a href="/post/sc_zuul/">SpringCloud源码| zuul源码</a></li>
+        
+        <li><a href="/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/">SpringCloud源码| 从单体到微服务</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/springcloud'>SpringCloud</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="http://leyou240.github.io/"> By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://leyou240.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利派送</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="https://curl.qcloud.com/G87YPcII" title="【腾讯云】新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得。" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345x200--2953d058277cb63c6b1cd127285163335cd6751e-2953d058277cb63c6b1cd127285163335cd6751e.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/x6Y8Z4Ax" title="【腾讯云】境外1核2G服务器低至2折，半价续费券限量免费领取！" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/%E5%85%A8%E7%90%83%E8%B4%AD_345%20200-dd004d4a4191fcbabcabea4fcd96f67d1e069f58.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://leyou240.github.io/tags/jdk/">jdk</a>
+    
+    <a href="http://leyou240.github.io/tags/juc/">juc</a>
+    
+    <a href="http://leyou240.github.io/tags/springcloud/">SpringCloud</a>
+    
+    <a href="http://leyou240.github.io/tags/tcc/">tcc</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://leyou240.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

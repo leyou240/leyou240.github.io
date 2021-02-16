@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SpringCloud源码 on </title>
+    <link>http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/</link>
+    <description>Recent content in SpringCloud源码 on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 13 Dec 2019 21:00:00 +0800</lastBuildDate><atom:link href="http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SpringCloud源码| eureka源码</title>
+      <link>http://leyou240.github.io/post/sc_eureka/</link>
+      <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
+      
+      <guid>http://leyou240.github.io/post/sc_eureka/</guid>
+      <description>eureka server启动流程 EurekaBootStrap#contextInitialized(ServletContextEvent) 方法进行初始化
+@Override public void contextInitialized(ServletContextEvent event) { try { //1、初始化eureka相关环境  initEurekaEnvironment(); //2、初始化eureka的serverContext  initEurekaServerContext(); ServletContext sc = event.getServletContext(); sc.setAttribute(EurekaServerContext.class.getName(), serverContext); } catch (Throwable e) { logger.error(&amp;#34;Cannot bootstrap eureka server :&amp;#34;, e); throw new RuntimeException(&amp;#34;Cannot bootstrap eureka server :&amp;#34;, e); } } /** * Users can override to initialize the environment themselves. */ protected void initEurekaEnvironment() throws Exception { logger.info(&amp;#34;Setting the eureka configuration..&amp;#34;); AbstractConfiguration configInstance = ConfigurationManager.getConfigInstance(); String dataCenter = configInstance.</description>
+    </item>
+    
+    <item>
+      <title>SpringCloud源码| feign源码</title>
+      <link>http://leyou240.github.io/post/sc_feign/</link>
+      <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
+      
+      <guid>http://leyou240.github.io/post/sc_feign/</guid>
+      <description>feign核心组件  Encoder和Decoder：编解码组件。SpringEncoder和ResponseEntityDecoder Contract：解析spring mvc相关组件。SpringMvcContract Feign.Builder：FeignClient的一个实例构造器，builder模式 FeignClient：LoadBalancerFeignClient ，底层整合ribbon  feign的使用和自定义配置
+@FeignClient(name = “ServiceA”, configuration = MyConfiguration.class) public interface ServiceAClient { } public class MyConfiguration { @Bean public RequestInterceptor requestInterceptor() { return new MyRequestInterceptor(); } } feign的入口  @EnableFeignClients，使用FeignClientsRegistrar扫描包下面的所有FeignClient。 使用SpringMvcContract解析相关spring mvc注解，生成LoadBalancerFeignClient动态代理 FeignClient底层使用ribbon进行负载均衡，调用对应的远程服务  @Import(FeignClientsRegistrar.class) public @interface EnableFeignClients { //省略 } //FeignClientsRegistrar类的重要方法 	@Override public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) { //注册bean 	registerDefaultConfiguration(metadata, registry); //扫描所有@FeignClient，解析注解中的所有属性。注册对应的FeignClient 	registerFeignClients(metadata, registry); } private void registerDefaultConfiguration(AnnotationMetadata metadata, BeanDefinitionRegistry registry) { Map&amp;lt;String, Object&amp;gt; defaultAttrs = metadata .</description>
+    </item>
+    
+    <item>
+      <title>SpringCloud源码| hystrix源码</title>
+      <link>http://leyou240.github.io/post/sc_hystrix/</link>
+      <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
+      
+      <guid>http://leyou240.github.io/post/sc_hystrix/</guid>
+      <description>hystrix在微服务中扮演重要作用，其实现了隔离、熔断、降级等重要组件
+但在spring cloud中，常与feign搭配起来使用。故本文仅包含其余feign整合后的相关源码。
+hystrix资源隔离 共有两种：线程池的资源隔离，信号量的资源隔离
+线程池：适合绝大多数的场景，99%的，线程池，对依赖服务的网络请求的调用和访问，timeout这种问题
+信号量：适合对内部的一些比较复杂的业务逻辑的访问，但是像这种访问，系统内部的代码，其实不涉及任何的网络请求，那么只要做信号量的普通限流就可以了，因为不需要去捕获timeout类似的问题。但算法+数据结构的效率不是太高，并发量突然太高，因为这里稍微耗时一些，导致很多线程卡在这里的话，不太好，所以进行一个基本的资源隔离和访问，避免内部复杂的低效率的代码，导致大量的线程被hang住
+feign集成hystrix以后，HystrixFeign.Builder则被替换为HystrixFeign.Builder。以支持hystrix相关组件
+//ReflectiveFeign 类中 public &amp;lt;T&amp;gt; T newInstance(Target&amp;lt;T&amp;gt; target) { Map&amp;lt;String, MethodHandler&amp;gt; nameToHandler = targetToHandlersByName.apply(target); //对应FeignClient中的方法，及代理类  Map&amp;lt;Method, MethodHandler&amp;gt; methodToHandler = new LinkedHashMap&amp;lt;Method, MethodHandler&amp;gt;(); List&amp;lt;DefaultMethodHandler&amp;gt; defaultMethodHandlers = new LinkedList&amp;lt;DefaultMethodHandler&amp;gt;(); for (Method method : target.type().getMethods()) { if (method.getDeclaringClass() == Object.class) { continue; } else if (Util.isDefault(method)) { DefaultMethodHandler handler = new DefaultMethodHandler(method); defaultMethodHandlers.add(handler); methodToHandler.put(method, handler); } else { methodToHandler.put(method, nameToHandler.get(Feign.configKey(target.type(), method))); } } //调用HystrixFeign.</description>
+    </item>
+    
+    <item>
+      <title>SpringCloud源码| ribbon源码</title>
+      <link>http://leyou240.github.io/post/sc_ribbon/</link>
+      <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
+      
+      <guid>http://leyou240.github.io/post/sc_ribbon/</guid>
+      <description>ribbon的作用：一个服务部署多个实例时，负责负载均衡请求的组件
+ribbon重要组件 ILoadBalancer：负载均衡器，其中包含了IRule和IPing
+IRule：负责负载均衡选择服务的规则
+IPing：定时ping服务器，判断其是否存活
+public class MyConfiguration { @Bean public IRule getRule() { return new MyRule(); } @Bean public IPing getPing() { return new MyPing(); } } @RibbonClient(name = &amp;#34;ServiceB&amp;#34;, configuration = MyConfiguration.class) public class ServiceBConfiguration { } ribbon的入口 @LoadBalanced将将一个RestTemplate标志为底层采用LoadBalancerClient来执行实际的http请求，支持负载均衡。
+org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration中有相关的bean注册。LoadBalancerRequestFactory、LoadBalancerInterceptor、RestTemplateCustomizer等等
+使用RestTemplateCustomizer对每个restTemplate，使用LoadBalancerInterceptor进行定制。
+@Bean @ConditionalOnMissingBean public LoadBalancerRequestFactory loadBalancerRequestFactory( LoadBalancerClient loadBalancerClient) { return new LoadBalancerRequestFactory(loadBalancerClient, this.transformers); } @Configuration(proxyBeanMethods = false) @ConditionalOnMissingClass(&amp;#34;org.springframework.retry.support.RetryTemplate&amp;#34;) static class LoadBalancerInterceptorConfig { //配置拦截器 	@Bean public LoadBalancerInterceptor loadBalancerInterceptor( LoadBalancerClient loadBalancerClient, LoadBalancerRequestFactory requestFactory) { return new LoadBalancerInterceptor(loadBalancerClient, requestFactory); } //RestTemplate定制化，使用LoadBalancerInterceptor 	@Bean @ConditionalOnMissingBean public RestTemplateCustomizer restTemplateCustomizer( final LoadBalancerInterceptor loadBalancerInterceptor) { return restTemplate -&amp;gt; { List&amp;lt;ClientHttpRequestInterceptor&amp;gt; list = new ArrayList&amp;lt;&amp;gt;( restTemplate.</description>
+    </item>
+    
+    <item>
+      <title>SpringCloud源码| zuul源码</title>
+      <link>http://leyou240.github.io/post/sc_zuul/</link>
+      <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
+      
+      <guid>http://leyou240.github.io/post/sc_zuul/</guid>
+      <description>zuul主要使用责任链设计模式
+其中有如下过滤器
+pre过滤器
+ -3：ServletDetectionFilter -2：Servlet30WrapperFilter -1：FromBodyWrapperFilter 1：DebugFilter 5：PreDecorationFilter  routing过滤器
+ 10：RibbonRoutingFilter 100：SimpleHostRoutingFilter 500：SendForwardFilter  post过滤器
+ 0：SendErrorFilter 900：LocationRewriteFilter 1000：SendResponseFilter  @EnableZuulProxy为spring cloud中zuul的入口
+@EnableCircuitBreaker @Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Import(ZuulProxyMarkerConfiguration.class) public @interface EnableZuulProxy { } 然后在ZuulProxyAutoConfiguration进行相关类的注册
+经过断点调试，核心逻辑为此方法ZuulServlet#service
+@Override public void service(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse) throws ServletException, IOException { try { init((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse); // Marks this request as having passed through the &amp;#34;Zuul engine&amp;#34;, as opposed to servlets  // explicitly bound in web.</description>
+    </item>
+    
+    <item>
+      <title>SpringCloud源码| 从单体到微服务</title>
+      <link>http://leyou240.github.io/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Thu, 12 Dec 2019 21:00:00 +0800</pubDate>
+      
+      <guid>http://leyou240.github.io/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>1、代码重复问题 拆分成多个服务，通过网络请求不同的服务。代码不再耦合重复
+2、多人协作效率问题 各种专注于自己的小范围即可，代码不会与其他服务冲突。测试上线不依赖其他服务
+3、扩容问题 之前其他服务(cpu/内存/网络/io)问题会导致服务宕机，现在各自独立部署，独立扩容。节省资源
+4、可用性问题 依赖的其他服务宕机，是他自己的事。做好熔断降级就好了。</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>并发源码|AQS、ReentratLock原理 | </title>
+    <meta property="og:title" content="并发源码|AQS、ReentratLock原理 - ">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-12-13T21:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-12-13T21:00:00&#43;08:00'>
+        
+    <meta name="Keywords" content="乐忧,java,博客,项目管理,python,软件架构">
+    <meta name="description" content="并发源码|AQS、ReentratLock原理">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://leyou240.github.io/">
+                        
+                    </a>
+                
+                <p class="description">专注于Java、软件架构、移动互联网、项目管理、Go语言(golang)等</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://leyou240.github.io/">首页</a>
+                    
+                    <a  href="http://leyou240.github.io/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#aqs原理">AQS原理</a></li>
+    <li><a href="#reentratlock">ReentratLock</a></li>
+    <li><a href="#reentrantreadwritelock读写锁">ReentrantReadWriteLock读写锁</a></li>
+    <li><a href="#condition">Condition</a></li>
+    <li><a href="#锁优化">锁优化</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">并发源码|AQS、ReentratLock原理</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年12月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/juc%E6%BA%90%E7%A0%81'>juc源码</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <h2 id="aqs原理">AQS原理</h2>
+<p>底层使用如下组件</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> state<span style="color:#f92672">;</span>
+<span style="color:#75715e">//标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时state递减，若state=0时将owner设置为null，并且使用LockSupport.unpark(s.thread);方法唤醒等待队列中的第一个线程
+</span><span style="color:#75715e">//其他线程来获取锁时，若失败，则加入等待队列(双向链表)，并且使用LockSupport.park(this);休眠此线程
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> Thread exclusiveOwnerThread<span style="color:#f92672">;</span>
+<span style="color:#75715e">//标识当前线程所有者
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">//一个双向链表作为一个队列来使用，存放等待队列(保存待加锁的线程)。
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">//非公平锁：新来一个线程直接判断能不能加锁，若能加锁则直接加锁，不能加锁才放入等待队列
+</span><span style="color:#75715e">//公平锁：等待队列中的线程依次加锁，体现的“公平”的特点
+</span></code></pre></div><h2 id="reentratlock">ReentratLock</h2>
+<p>
+        <img class="mx-auto" alt="" src=".%5c05_AQS%e5%8e%9f%e7%90%86.jpg" />   
+    </p>
+<p>多个线程争抢锁</p>
+<p>
+        <img class="mx-auto" alt="" src="./06_%e5%a4%9a%e7%ba%bf%e7%a8%8b%e4%ba%89%e6%8a%a2ReentrantLock.jpg" />   
+    </p>
+<p>尝试加锁，public boolean tryLock(long timeout, TimeUnit unit) 如果加锁不成功，则等待一段时间不成功则设置当前线程waitstate为SIGNAL状态，并持续重试，若最终超过了等待时间则从队列中移除</p>
+<h2 id="reentrantreadwritelock读写锁">ReentrantReadWriteLock读写锁</h2>
+<p>使用state的高低16位(因为int是32位)来标识<strong>读锁(高16位)<strong>和</strong>写锁(低16位)</strong>，非0表示已经加过锁了</p>
+<p>读锁，可以同时被多个线程同时持有。读请求可以并发起来</p>
+<p>写锁，则是互斥的</p>
+<p>
+        <img class="mx-auto" alt="" src="07_%e5%86%99%e9%94%81%e5%8e%9f%e7%90%86.jpg" />   
+    </p>
+<h2 id="condition">Condition</h2>
+<p>可重入锁可以创建Condition，主要有2个方法await与notify/notifyAll。 await等待唤醒，await与notify/notifyAll唤醒对应conditionawait的线程。</p>
+<p>Condition.await()原理：将自己加入condition等待队列、释放锁、挂起自己</p>
+<p>如果在加锁等待队列里有人阻塞，会有unpark的过程，唤醒加锁等待队列中的队头元素的那个过程</p>
+<p>signal唤醒的过程，大概的意思，就是把condition等待队列中的元素，转化为一个加锁等待队列中的元素</p>
+<h2 id="锁优化">锁优化</h2>
+<p>TODO：</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://leyou240.github.io/"></a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/">http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/">并发源码| JMM与volatile</a></li>
+        
+        <li><a href="/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/">并发源码|Atomicxxx原理</a></li>
+        
+        <li><a href="/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/">并发源码|Hashmap死循环问题与ConcurrentHashmap</a></li>
+        
+        <li><a href="/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/">并发源码|synchronized、wait与notify</a></li>
+        
+        <li><a href="/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/">并发源码|其他并发容器</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/juc'>juc</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="http://leyou240.github.io/"> By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://leyou240.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利派送</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="https://curl.qcloud.com/G87YPcII" title="【腾讯云】新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得。" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345x200--2953d058277cb63c6b1cd127285163335cd6751e-2953d058277cb63c6b1cd127285163335cd6751e.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/x6Y8Z4Ax" title="【腾讯云】境外1核2G服务器低至2折，半价续费券限量免费领取！" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/%E5%85%A8%E7%90%83%E8%B4%AD_345%20200-dd004d4a4191fcbabcabea4fcd96f67d1e069f58.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://leyou240.github.io/tags/jdk/">jdk</a>
+    
+    <a href="http://leyou240.github.io/tags/juc/">juc</a>
+    
+    <a href="http://leyou240.github.io/tags/springcloud/">SpringCloud</a>
+    
+    <a href="http://leyou240.github.io/tags/tcc/">tcc</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://leyou240.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

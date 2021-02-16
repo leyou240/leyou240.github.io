@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>SpringCloud源码| feign源码 | </title>
+    <meta property="og:title" content="SpringCloud源码| feign源码 - ">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-12-13T21:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-12-13T21:00:00&#43;08:00'>
+        
+    <meta name="Keywords" content="乐忧,java,博客,项目管理,python,软件架构">
+    <meta name="description" content="SpringCloud源码| feign源码">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://leyou240.github.io/post/sc_feign/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://leyou240.github.io/">
+                        
+                    </a>
+                
+                <p class="description">专注于Java、软件架构、移动互联网、项目管理、Go语言(golang)等</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://leyou240.github.io/">首页</a>
+                    
+                    <a  href="http://leyou240.github.io/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#feign核心组件">feign核心组件</a></li>
+        <li><a href="#feign的入口">feign的入口</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">SpringCloud源码| feign源码</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年12月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/springcloud%E6%BA%90%E7%A0%81'>SpringCloud源码</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <h3 id="feign核心组件">feign核心组件</h3>
+<ul>
+<li>Encoder和Decoder：编解码组件。SpringEncoder和ResponseEntityDecoder</li>
+<li>Contract：解析spring mvc相关组件。SpringMvcContract</li>
+<li>Feign.Builder：FeignClient的一个实例构造器，builder模式</li>
+<li>FeignClient：LoadBalancerFeignClient ，底层整合ribbon</li>
+</ul>
+<p>feign的使用和自定义配置</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@FeignClient</span><span style="color:#f92672">(</span>name <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">“</span>ServiceA<span style="color:#960050;background-color:#1e0010">”</span><span style="color:#f92672">,</span> configuration <span style="color:#f92672">=</span> MyConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ServiceAClient</span> <span style="color:#f92672">{</span>
+
+<span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfiguration</span> <span style="color:#f92672">{</span>
+<span style="color:#a6e22e">@Bean</span>
+<span style="color:#66d9ef">public</span> RequestInterceptor <span style="color:#a6e22e">requestInterceptor</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MyRequestInterceptor<span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="feign的入口">feign的入口</h3>
+<ol>
+<li>@EnableFeignClients，使用FeignClientsRegistrar扫描包下面的所有FeignClient。</li>
+<li>使用SpringMvcContract解析相关spring mvc注解，生成LoadBalancerFeignClient动态代理</li>
+<li>FeignClient底层使用ribbon进行负载均衡，调用对应的远程服务</li>
+</ol>
+<p>
+        <img class="mx-auto" alt="" src="%e6%89%ab%e6%8f%8f@FeignClient%e6%b3%a8%e8%a7%a3%e7%9a%84%e5%85%a5%e5%8f%a3.png" />   
+    </p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Import</span><span style="color:#f92672">(</span>FeignClientsRegistrar<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> EnableFeignClients <span style="color:#f92672">{</span>
+    <span style="color:#75715e">//省略
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+<span style="color:#75715e">//FeignClientsRegistrar类的重要方法
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">@Override</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">registerBeanDefinitions</span><span style="color:#f92672">(</span>AnnotationMetadata metadata<span style="color:#f92672">,</span>
+			BeanDefinitionRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">//注册bean
+</span><span style="color:#75715e"></span>		registerDefaultConfiguration<span style="color:#f92672">(</span>metadata<span style="color:#f92672">,</span> registry<span style="color:#f92672">);</span>
+        <span style="color:#75715e">//扫描所有@FeignClient，解析注解中的所有属性。注册对应的FeignClient
+</span><span style="color:#75715e"></span>		registerFeignClients<span style="color:#f92672">(</span>metadata<span style="color:#f92672">,</span> registry<span style="color:#f92672">);</span>
+	<span style="color:#f92672">}</span>
+
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">registerDefaultConfiguration</span><span style="color:#f92672">(</span>AnnotationMetadata metadata<span style="color:#f92672">,</span>
+			BeanDefinitionRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> defaultAttrs <span style="color:#f92672">=</span> metadata
+				<span style="color:#f92672">.</span><span style="color:#a6e22e">getAnnotationAttributes</span><span style="color:#f92672">(</span>EnableFeignClients<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">(),</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+
+		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>defaultAttrs <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> defaultAttrs<span style="color:#f92672">.</span><span style="color:#a6e22e">containsKey</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;defaultConfiguration&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+			String name<span style="color:#f92672">;</span>
+			<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>metadata<span style="color:#f92672">.</span><span style="color:#a6e22e">hasEnclosingClass</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+				name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;default.&#34;</span> <span style="color:#f92672">+</span> metadata<span style="color:#f92672">.</span><span style="color:#a6e22e">getEnclosingClassName</span><span style="color:#f92672">();</span>
+			<span style="color:#f92672">}</span>
+			<span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+				name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;default.&#34;</span> <span style="color:#f92672">+</span> metadata<span style="color:#f92672">.</span><span style="color:#a6e22e">getClassName</span><span style="color:#f92672">();</span>
+			<span style="color:#f92672">}</span>
+			registerClientConfiguration<span style="color:#f92672">(</span>registry<span style="color:#f92672">,</span> name<span style="color:#f92672">,</span>
+					defaultAttrs<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;defaultConfiguration&#34;</span><span style="color:#f92672">));</span>
+		<span style="color:#f92672">}</span>
+	<span style="color:#f92672">}</span>
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">registerFeignClients</span><span style="color:#f92672">(</span>AnnotationMetadata metadata<span style="color:#f92672">,</span>
+			BeanDefinitionRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+
+		LinkedHashSet<span style="color:#f92672">&lt;</span>BeanDefinition<span style="color:#f92672">&gt;</span> candidateComponents <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LinkedHashSet<span style="color:#f92672">&lt;&gt;();</span>
+		Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> attrs <span style="color:#f92672">=</span> metadata
+				<span style="color:#f92672">.</span><span style="color:#a6e22e">getAnnotationAttributes</span><span style="color:#f92672">(</span>EnableFeignClients<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">());</span>
+<span style="color:#75715e">//		AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(
+</span><span style="color:#75715e">//				FeignClient.class);
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">final</span> Class<span style="color:#f92672">&lt;?&gt;[]</span> clients <span style="color:#f92672">=</span> attrs <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">null</span>
+				<span style="color:#f92672">:</span> <span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;[])</span> attrs<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;clients&#34;</span><span style="color:#f92672">);</span>
+		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>clients <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> clients<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+			ClassPathScanningCandidateComponentProvider scanner <span style="color:#f92672">=</span> getScanner<span style="color:#f92672">();</span>
+			scanner<span style="color:#f92672">.</span><span style="color:#a6e22e">setResourceLoader</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">resourceLoader</span><span style="color:#f92672">);</span>
+            <span style="color:#75715e">//扫描FeignClient
+</span><span style="color:#75715e"></span>			scanner<span style="color:#f92672">.</span><span style="color:#a6e22e">addIncludeFilter</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> AnnotationTypeFilter<span style="color:#f92672">(</span>FeignClient<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">));</span>
+			Set<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> basePackages <span style="color:#f92672">=</span> getBasePackages<span style="color:#f92672">(</span>metadata<span style="color:#f92672">);</span>
+			<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>String basePackage <span style="color:#f92672">:</span> basePackages<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+				candidateComponents<span style="color:#f92672">.</span><span style="color:#a6e22e">addAll</span><span style="color:#f92672">(</span>scanner<span style="color:#f92672">.</span><span style="color:#a6e22e">findCandidateComponents</span><span style="color:#f92672">(</span>basePackage<span style="color:#f92672">));</span>
+			<span style="color:#f92672">}</span>
+		<span style="color:#f92672">}</span>
+		<span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+			<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> clazz <span style="color:#f92672">:</span> clients<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+				candidateComponents<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> AnnotatedGenericBeanDefinition<span style="color:#f92672">(</span>clazz<span style="color:#f92672">));</span>
+			<span style="color:#f92672">}</span>
+		<span style="color:#f92672">}</span>
+
+		<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>BeanDefinition candidateComponent <span style="color:#f92672">:</span> candidateComponents<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+			<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>candidateComponent <span style="color:#66d9ef">instanceof</span> AnnotatedBeanDefinition<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+				<span style="color:#75715e">// verify annotated class is an interface
+</span><span style="color:#75715e"></span>				AnnotatedBeanDefinition beanDefinition <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>AnnotatedBeanDefinition<span style="color:#f92672">)</span> candidateComponent<span style="color:#f92672">;</span>
+				AnnotationMetadata annotationMetadata <span style="color:#f92672">=</span> beanDefinition<span style="color:#f92672">.</span><span style="color:#a6e22e">getMetadata</span><span style="color:#f92672">();</span>
+				Assert<span style="color:#f92672">.</span><span style="color:#a6e22e">isTrue</span><span style="color:#f92672">(</span>annotationMetadata<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterface</span><span style="color:#f92672">(),</span>
+						<span style="color:#e6db74">&#34;@FeignClient can only be specified on an interface&#34;</span><span style="color:#f92672">);</span>
+
+				Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> attributes <span style="color:#f92672">=</span> annotationMetadata
+						<span style="color:#f92672">.</span><span style="color:#a6e22e">getAnnotationAttributes</span><span style="color:#f92672">(</span>
+								FeignClient<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getCanonicalName</span><span style="color:#f92672">());</span>
+
+				String name <span style="color:#f92672">=</span> getClientName<span style="color:#f92672">(</span>attributes<span style="color:#f92672">);</span>
+				registerClientConfiguration<span style="color:#f92672">(</span>registry<span style="color:#f92672">,</span> name<span style="color:#f92672">,</span>
+						attributes<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;configuration&#34;</span><span style="color:#f92672">));</span>
+
+				registerFeignClient<span style="color:#f92672">(</span>registry<span style="color:#f92672">,</span> annotationMetadata<span style="color:#f92672">,</span> attributes<span style="color:#f92672">);</span>
+			<span style="color:#f92672">}</span>
+		<span style="color:#f92672">}</span>
+	<span style="color:#f92672">}</span>
+	<span style="color:#75715e">//解析FeignClient的所有属性，并注册FeignClientFactoryBean定义
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">registerFeignClient</span><span style="color:#f92672">(</span>BeanDefinitionRegistry registry<span style="color:#f92672">,</span>
+			AnnotationMetadata annotationMetadata<span style="color:#f92672">,</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> attributes<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		String className <span style="color:#f92672">=</span> annotationMetadata<span style="color:#f92672">.</span><span style="color:#a6e22e">getClassName</span><span style="color:#f92672">();</span>
+		BeanDefinitionBuilder definition <span style="color:#f92672">=</span> BeanDefinitionBuilder
+				<span style="color:#f92672">.</span><span style="color:#a6e22e">genericBeanDefinition</span><span style="color:#f92672">(</span>FeignClientFactoryBean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+		validate<span style="color:#f92672">(</span>attributes<span style="color:#f92672">);</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;url&#34;</span><span style="color:#f92672">,</span> getUrl<span style="color:#f92672">(</span>attributes<span style="color:#f92672">));</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;path&#34;</span><span style="color:#f92672">,</span> getPath<span style="color:#f92672">(</span>attributes<span style="color:#f92672">));</span>
+		String name <span style="color:#f92672">=</span> getName<span style="color:#f92672">(</span>attributes<span style="color:#f92672">);</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">,</span> name<span style="color:#f92672">);</span>
+		String contextId <span style="color:#f92672">=</span> getContextId<span style="color:#f92672">(</span>attributes<span style="color:#f92672">);</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;contextId&#34;</span><span style="color:#f92672">,</span> contextId<span style="color:#f92672">);</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">,</span> className<span style="color:#f92672">);</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;decode404&#34;</span><span style="color:#f92672">,</span> attributes<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;decode404&#34;</span><span style="color:#f92672">));</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;fallback&#34;</span><span style="color:#f92672">,</span> attributes<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;fallback&#34;</span><span style="color:#f92672">));</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">addPropertyValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;fallbackFactory&#34;</span><span style="color:#f92672">,</span> attributes<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;fallbackFactory&#34;</span><span style="color:#f92672">));</span>
+		definition<span style="color:#f92672">.</span><span style="color:#a6e22e">setAutowireMode</span><span style="color:#f92672">(</span>AbstractBeanDefinition<span style="color:#f92672">.</span><span style="color:#a6e22e">AUTOWIRE_BY_TYPE</span><span style="color:#f92672">);</span>
+
+		String alias <span style="color:#f92672">=</span> contextId <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;FeignClient&#34;</span><span style="color:#f92672">;</span>
+		AbstractBeanDefinition beanDefinition <span style="color:#f92672">=</span> definition<span style="color:#f92672">.</span><span style="color:#a6e22e">getBeanDefinition</span><span style="color:#f92672">();</span>
+		beanDefinition<span style="color:#f92672">.</span><span style="color:#a6e22e">setAttribute</span><span style="color:#f92672">(</span>FactoryBean<span style="color:#f92672">.</span><span style="color:#a6e22e">OBJECT_TYPE_ATTRIBUTE</span><span style="color:#f92672">,</span> className<span style="color:#f92672">);</span>
+
+		<span style="color:#75715e">// has a default, won&#39;t be null
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">boolean</span> primary <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Boolean<span style="color:#f92672">)</span> attributes<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;primary&#34;</span><span style="color:#f92672">);</span>
+
+		beanDefinition<span style="color:#f92672">.</span><span style="color:#a6e22e">setPrimary</span><span style="color:#f92672">(</span>primary<span style="color:#f92672">);</span>
+
+		String qualifier <span style="color:#f92672">=</span> getQualifier<span style="color:#f92672">(</span>attributes<span style="color:#f92672">);</span>
+		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>StringUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">hasText</span><span style="color:#f92672">(</span>qualifier<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+			alias <span style="color:#f92672">=</span> qualifier<span style="color:#f92672">;</span>
+		<span style="color:#f92672">}</span>
+
+		BeanDefinitionHolder holder <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BeanDefinitionHolder<span style="color:#f92672">(</span>beanDefinition<span style="color:#f92672">,</span> className<span style="color:#f92672">,</span>
+				<span style="color:#66d9ef">new</span> String<span style="color:#f92672">[]</span> <span style="color:#f92672">{</span> alias <span style="color:#f92672">});</span>
+		BeanDefinitionReaderUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">registerBeanDefinition</span><span style="color:#f92672">(</span>holder<span style="color:#f92672">,</span> registry<span style="color:#f92672">);</span>
+	<span style="color:#f92672">}</span>
+</code></pre></div><p>FeignClientFactoryBean就是创建FeignClient组件的工厂</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
+<span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">getObject</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+   <span style="color:#66d9ef">return</span> getTarget<span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * @param &lt;T&gt; the target type of the Feign client
+</span><span style="color:#75715e"> * @return a {@link Feign} client created with the specified data and the context
+</span><span style="color:#75715e"> * information
+</span><span style="color:#75715e"> */</span>
+<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">getTarget</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+   FeignContext context <span style="color:#f92672">=</span> applicationContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>FeignContext<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+   Feign<span style="color:#f92672">.</span><span style="color:#a6e22e">Builder</span> builder <span style="color:#f92672">=</span> feign<span style="color:#f92672">(</span>context<span style="color:#f92672">);</span>
+
+   <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>StringUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">hasText</span><span style="color:#f92672">(</span>url<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>name<span style="color:#f92672">.</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+         url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://&#34;</span> <span style="color:#f92672">+</span> name<span style="color:#f92672">;</span>
+      <span style="color:#f92672">}</span>
+      <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+         url <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+      <span style="color:#f92672">}</span>
+      url <span style="color:#f92672">+=</span> cleanPath<span style="color:#f92672">();</span>
+      <span style="color:#75715e">//生成动态代理
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>T<span style="color:#f92672">)</span> loadBalance<span style="color:#f92672">(</span>builder<span style="color:#f92672">,</span> context<span style="color:#f92672">,</span>
+            <span style="color:#66d9ef">new</span> HardCodedTarget<span style="color:#f92672">&lt;&gt;(</span>type<span style="color:#f92672">,</span> name<span style="color:#f92672">,</span> url<span style="color:#f92672">));</span>
+   <span style="color:#f92672">}</span>
+   <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>StringUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">hasText</span><span style="color:#f92672">(</span>url<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>url<span style="color:#f92672">.</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+      url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://&#34;</span> <span style="color:#f92672">+</span> url<span style="color:#f92672">;</span>
+   <span style="color:#f92672">}</span>
+   String url <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">url</span> <span style="color:#f92672">+</span> cleanPath<span style="color:#f92672">();</span>
+   Client client <span style="color:#f92672">=</span> getOptional<span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> Client<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+   <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>client <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>client <span style="color:#66d9ef">instanceof</span> LoadBalancerFeignClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+         <span style="color:#75715e">// not load balancing because we have a url,
+</span><span style="color:#75715e"></span>         <span style="color:#75715e">// but ribbon is on the classpath, so unwrap
+</span><span style="color:#75715e"></span>         client <span style="color:#f92672">=</span> <span style="color:#f92672">((</span>LoadBalancerFeignClient<span style="color:#f92672">)</span> client<span style="color:#f92672">).</span><span style="color:#a6e22e">getDelegate</span><span style="color:#f92672">();</span>
+      <span style="color:#f92672">}</span>
+      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>client <span style="color:#66d9ef">instanceof</span> FeignBlockingLoadBalancerClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+         <span style="color:#75715e">// not load balancing because we have a url,
+</span><span style="color:#75715e"></span>         <span style="color:#75715e">// but Spring Cloud LoadBalancer is on the classpath, so unwrap
+</span><span style="color:#75715e"></span>         client <span style="color:#f92672">=</span> <span style="color:#f92672">((</span>FeignBlockingLoadBalancerClient<span style="color:#f92672">)</span> client<span style="color:#f92672">).</span><span style="color:#a6e22e">getDelegate</span><span style="color:#f92672">();</span>
+      <span style="color:#f92672">}</span>
+      builder<span style="color:#f92672">.</span><span style="color:#a6e22e">client</span><span style="color:#f92672">(</span>client<span style="color:#f92672">);</span>
+   <span style="color:#f92672">}</span>
+   Targeter targeter <span style="color:#f92672">=</span> get<span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> Targeter<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+   <span style="color:#75715e">//生成动态代理
+</span><span style="color:#75715e"></span>   <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>T<span style="color:#f92672">)</span> targeter<span style="color:#f92672">.</span><span style="color:#a6e22e">target</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> builder<span style="color:#f92672">,</span> context<span style="color:#f92672">,</span>
+         <span style="color:#66d9ef">new</span> HardCodedTarget<span style="color:#f92672">&lt;&gt;(</span>type<span style="color:#f92672">,</span> name<span style="color:#f92672">,</span> url<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+	<span style="color:#66d9ef">protected</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">loadBalance</span><span style="color:#f92672">(</span>Feign<span style="color:#f92672">.</span><span style="color:#a6e22e">Builder</span> builder<span style="color:#f92672">,</span> FeignContext context<span style="color:#f92672">,</span>
+			HardCodedTarget<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		Client client <span style="color:#f92672">=</span> getOptional<span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> Client<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>client <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+			builder<span style="color:#f92672">.</span><span style="color:#a6e22e">client</span><span style="color:#f92672">(</span>client<span style="color:#f92672">);</span>
+			Targeter targeter <span style="color:#f92672">=</span> get<span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> Targeter<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+			<span style="color:#66d9ef">return</span> targeter<span style="color:#f92672">.</span><span style="color:#a6e22e">target</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> builder<span style="color:#f92672">,</span> context<span style="color:#f92672">,</span> target<span style="color:#f92672">);</span>
+		<span style="color:#f92672">}</span>
+
+		<span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span>
+				<span style="color:#e6db74">&#34;No Feign Client for loadBalancing defined. Did you forget to include spring-cloud-starter-netflix-ribbon?&#34;</span><span style="color:#f92672">);</span>
+	<span style="color:#f92672">}</span>
+</code></pre></div><p>此处获取的Targeter在FeignAutoConfiguration注册</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<span style="color:#a6e22e">@ConditionalOnClass</span><span style="color:#f92672">(</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;feign.hystrix.HystrixFeign&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HystrixFeignTargeterConfiguration</span> <span style="color:#f92672">{</span>
+
+   <span style="color:#a6e22e">@Bean</span>
+   <span style="color:#a6e22e">@ConditionalOnMissingBean</span>
+   <span style="color:#66d9ef">public</span> Targeter <span style="color:#a6e22e">feignTargeter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HystrixTargeter<span style="color:#f92672">();</span>
+   <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<span style="color:#a6e22e">@ConditionalOnMissingClass</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;feign.hystrix.HystrixFeign&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DefaultFeignTargeterConfiguration</span> <span style="color:#f92672">{</span>
+
+   <span style="color:#a6e22e">@Bean</span>
+   <span style="color:#a6e22e">@ConditionalOnMissingBean</span>
+   <span style="color:#66d9ef">public</span> Targeter <span style="color:#a6e22e">feignTargeter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> DefaultTargeter<span style="color:#f92672">();</span>
+   <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Feign.Builder最后调用build创建ReflectiveFeign实例，调用newInstance方法，使用动态代理创建FeignClient。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">newInstance</span><span style="color:#f92672">(</span>Target<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> MethodHandler<span style="color:#f92672">&gt;</span> nameToHandler <span style="color:#f92672">=</span> targetToHandlersByName<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>target<span style="color:#f92672">);</span>
+  Map<span style="color:#f92672">&lt;</span>Method<span style="color:#f92672">,</span> MethodHandler<span style="color:#f92672">&gt;</span> methodToHandler <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LinkedHashMap<span style="color:#f92672">&lt;</span>Method<span style="color:#f92672">,</span> MethodHandler<span style="color:#f92672">&gt;();</span>
+  List<span style="color:#f92672">&lt;</span>DefaultMethodHandler<span style="color:#f92672">&gt;</span> defaultMethodHandlers <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LinkedList<span style="color:#f92672">&lt;</span>DefaultMethodHandler<span style="color:#f92672">&gt;();</span>
+
+  <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Method method <span style="color:#f92672">:</span> target<span style="color:#f92672">.</span><span style="color:#a6e22e">type</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getMethods</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+      <span style="color:#75715e">//过滤object的方法
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>method<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaringClass</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> Object<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">continue</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span> <span style="color:#75715e">//是否默认方法
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Util<span style="color:#f92672">.</span><span style="color:#a6e22e">isDefault</span><span style="color:#f92672">(</span>method<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+      DefaultMethodHandler handler <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultMethodHandler<span style="color:#f92672">(</span>method<span style="color:#f92672">);</span>
+      defaultMethodHandlers<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>handler<span style="color:#f92672">);</span>
+      methodToHandler<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>method<span style="color:#f92672">,</span> handler<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+      methodToHandler<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>method<span style="color:#f92672">,</span> nameToHandler<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>Feign<span style="color:#f92672">.</span><span style="color:#a6e22e">configKey</span><span style="color:#f92672">(</span>target<span style="color:#f92672">.</span><span style="color:#a6e22e">type</span><span style="color:#f92672">(),</span> method<span style="color:#f92672">)));</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#f92672">}</span>
+  InvocationHandler handler <span style="color:#f92672">=</span> factory<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>target<span style="color:#f92672">,</span> methodToHandler<span style="color:#f92672">);</span>
+  T proxy <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>T<span style="color:#f92672">)</span> Proxy<span style="color:#f92672">.</span><span style="color:#a6e22e">newProxyInstance</span><span style="color:#f92672">(</span>target<span style="color:#f92672">.</span><span style="color:#a6e22e">type</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getClassLoader</span><span style="color:#f92672">(),</span>
+      <span style="color:#66d9ef">new</span> Class<span style="color:#f92672">&lt;?&gt;[]</span> <span style="color:#f92672">{</span>target<span style="color:#f92672">.</span><span style="color:#a6e22e">type</span><span style="color:#f92672">()},</span> handler<span style="color:#f92672">);</span>
+
+  <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>DefaultMethodHandler defaultMethodHandler <span style="color:#f92672">:</span> defaultMethodHandlers<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    defaultMethodHandler<span style="color:#f92672">.</span><span style="color:#a6e22e">bindTo</span><span style="color:#f92672">(</span>proxy<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+  <span style="color:#66d9ef">return</span> proxy<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div>
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://leyou240.github.io/"></a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://leyou240.github.io/post/sc_feign/">http://leyou240.github.io/post/sc_feign/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/sc_eureka/">SpringCloud源码| eureka源码</a></li>
+        
+        <li><a href="/post/sc_hystrix/">SpringCloud源码| hystrix源码</a></li>
+        
+        <li><a href="/post/sc_ribbon/">SpringCloud源码| ribbon源码</a></li>
+        
+        <li><a href="/post/sc_zuul/">SpringCloud源码| zuul源码</a></li>
+        
+        <li><a href="/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/">SpringCloud源码| 从单体到微服务</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/springcloud'>SpringCloud</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="http://leyou240.github.io/"> By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://leyou240.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利派送</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="https://curl.qcloud.com/G87YPcII" title="【腾讯云】新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得。" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345x200--2953d058277cb63c6b1cd127285163335cd6751e-2953d058277cb63c6b1cd127285163335cd6751e.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/x6Y8Z4Ax" title="【腾讯云】境外1核2G服务器低至2折，半价续费券限量免费领取！" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/%E5%85%A8%E7%90%83%E8%B4%AD_345%20200-dd004d4a4191fcbabcabea4fcd96f67d1e069f58.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://leyou240.github.io/tags/jdk/">jdk</a>
+    
+    <a href="http://leyou240.github.io/tags/juc/">juc</a>
+    
+    <a href="http://leyou240.github.io/tags/springcloud/">SpringCloud</a>
+    
+    <a href="http://leyou240.github.io/tags/tcc/">tcc</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://leyou240.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

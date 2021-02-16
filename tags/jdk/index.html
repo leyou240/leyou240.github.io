@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>jdk | </title>
+    <meta property="og:title" content="jdk - ">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="乐忧,java,博客,项目管理,python,软件架构">
+    <meta name="description" content="jdk">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://leyou240.github.io/tags/jdk/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml+xml" href="http://leyou240.github.io/tags/jdk/index.xml" title="" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://leyou240.github.io/">
+                        
+                    </a>
+                
+                <p class="description">专注于Java、软件架构、移动互联网、项目管理、Go语言(golang)等</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://leyou240.github.io/">首页</a>
+                    
+                    <a  href="http://leyou240.github.io/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <h3 class="archive-title">
+        包含标签
+        <span class="keyword">jdk</span>
+        的文章
+    </h3>
+    
+
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/">ArrayList和LinkedList集合源码</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年12月13日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/jdk%E6%BA%90%E7%A0%81'>jdk源码</a>
+            
+        </div>
+        
+        <div class="post-content">
+            ArrayList 底层使用数组实现，适合插入较少
+适合随机查找O(1)，原理：地址连续
+扩容O(n) 源码中int newCapacity = oldCapacity + (oldCapacity &raquo; 1);即扩容为原来的1.5倍
+插入O(n)，尾插为O(1)，最坏O(n)，平均即为 O(n)
+LinkedList 底层使用(双向)链表，适合插入较多
+随机查找O(n)
+头尾插入O(1)
+使用场景 ArrayList：一般场景，都是用ArrayList来代表一个集合，只要别频繁的往里面插入和灌入大量的元素就可以了，遍历，或者随机查，都可以。
+LinkedList：适合，频繁的在list中插入和删除某个元素，然后尤其是LinkedList他其实是可以当做队列来用的，这个东西的话呢，我们后面看源码的时候，可以来看一下，先进先出，在list尾部怼进去一个元素，从头部拿出来一个元素。如果要在内存里实现一个基本的队列的话，可以用LinkedList……
+            <p class="readmore"><a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/">Hashmap源码</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年12月13日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/jdk%E6%BA%90%E7%A0%81'>jdk源码</a>
+            
+        </div>
+        
+        <div class="post-content">
+            Hashmap 对key进行hash，放到数组对应的位置 p = tab[i = (n - 1) &amp; hash] 。i的位置为i = (n - 1) &amp; hash
+从JDK8以后结构为：数组 + 链表 + 红黑树，从原来的hash冲突时由纯链表变为，当链表长度大于8以后变为红黑树。
+fail-fast机制是什么东西，这个在开发的时候是一个比较常见的异常，ConcurrentModificationException
+核心变量 static final int DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4; // aka 16 //应该是数组的默认的初始大小，是16，这个跟ArrayList是不一样的，初始的默认大小是10 //这个数组的大小，一般会自己手动指定一下，就跟你用ArrayList一样，你需要去预估一下你的这个数据结构里会放多少key-value对，指定的大一些，避免频繁的扩容 static final float DEFAULT_LOAD_FACTOR = 0.75f; //默认的负载因子，如果你在数组里的元素的个数达到了数组大小（16） * 负载因子（0.75f），默认是达到12个元素，就会进行数组的扩容 static class Node&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; { final int hash; final K key; V value; Node&lt;K,V&gt; next; } //这是一个很关键的内部类，他其实是代表了一个key-value对，里面包含了key的hash值，key，value，还有就是可以有一个next的指针，指向下一个Node，也就是指向单向链表中的下一个节点 //通过这个next指针，就可以形成一个链表 transient Node&lt;K,V&gt;[] table; //这个是什么东东？Node&lt;K, V&gt;[]，这个数组就是所谓的map里的核心数据结构的数组，数组的元素就可以看到是Node类型的，天然就可以挂成一个链表，单向链表，Node里面只有一个next指针 transient int size; //这个size代表的是就是当前hashmap中有多少个key-value对，如果这个数量达到了指定大小 * 负载因子，那么就会进行数组的扩容 int threshold; //这个值，其实就是说capacity（就是默认的数组的大小），就是说capacity * loadFactory，就是threshold，如果size达到了threshold，那么就会进行数组的扩容，如果面试这么回答，你就是在打自己的脸。扩容的时机是size&gt;threshold  //负载因子，默认值，threshold，扩容，扩容，rehash的算法，JDK 1.……
+            <p class="readmore"><a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="http://leyou240.github.io/"> By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://leyou240.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
+    </li>
+    
+    <li>
+        <a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利派送</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="https://curl.qcloud.com/G87YPcII" title="【腾讯云】新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得。" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345x200--2953d058277cb63c6b1cd127285163335cd6751e-2953d058277cb63c6b1cd127285163335cd6751e.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://curl.qcloud.com/x6Y8Z4Ax" title="【腾讯云】境外1核2G服务器低至2折，半价续费券限量免费领取！" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/%E5%85%A8%E7%90%83%E8%B4%AD_345%20200-dd004d4a4191fcbabcabea4fcd96f67d1e069f58.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
+    
+    <li><a href="http://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://leyou240.github.io/tags/jdk/">jdk</a>
+    
+    <a href="http://leyou240.github.io/tags/juc/">juc</a>
+    
+    <a href="http://leyou240.github.io/tags/springcloud/">SpringCloud</a>
+    
+    <a href="http://leyou240.github.io/tags/tcc/">tcc</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://leyou240.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
