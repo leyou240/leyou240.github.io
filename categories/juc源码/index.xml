@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>juc源码 on </title>
-    <link>http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/</link>
+    <link>https://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/</link>
     <description>Recent content in juc源码 on </description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 13 Dec 2019 21:00:00 +0800</lastBuildDate><atom:link href="http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Dec 2019 21:00:00 +0800</lastBuildDate><atom:link href="https://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>并发源码| JMM与volatile</title>
-      <link>http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/</link>
+      <link>https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/</guid>
+      <guid>https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/</guid>
       <description>主内存的数据会被加载到cpu本地缓存里去，cpu后面会读写自己的缓存
 缓存模型下的并发问题
 java内存模型
@@ -35,10 +35,10 @@ public class Singleton { private static volatile Singleton instance; private Sin
     
     <item>
       <title>并发源码|AQS、ReentratLock原理</title>
-      <link>http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/</link>
+      <link>https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/</guid>
+      <guid>https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/</guid>
       <description>AQS原理 底层使用如下组件
 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时state递减，若state=0时将owner设置为null，并且使用LockSupport.unpark(s.thread);方法唤醒等待队列中的第一个线程 //其他线程来获取锁时，若失败，则加入等待队列(双向链表)，并且使用LockSupport.park(this);休眠此线程  private transient Thread exclusiveOwnerThread; //标识当前线程所有者  //一个双向链表作为一个队列来使用，存放等待队列(保存待加锁的线程)。  //非公平锁：新来一个线程直接判断能不能加锁，若能加锁则直接加锁，不能加锁才放入等待队列 //公平锁：等待队列中的线程依次加锁，体现的“公平”的特点 ReentratLock 多个线程争抢锁
 尝试加锁，public boolean tryLock(long timeout, TimeUnit unit) 如果加锁不成功，则等待一段时间不成功则设置当前线程waitstate为SIGNAL状态，并持续重试，若最终超过了等待时间则从队列中移除
@@ -54,10 +54,10 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
     
     <item>
       <title>并发源码|Atomicxxx原理</title>
-      <link>http://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/</link>
+      <link>https://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/</guid>
+      <guid>https://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/</guid>
       <description>AtomicInteger原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等
 都是无锁化或者叫乐观锁，判断此时此刻是否是某个值，如果是则修改，不是则重新查询一个最新的值，再次执行判断。这个操作叫CAS，compare and set(swap jdk8及以后)
 Atomic原子类底层核心的原理就是CAS，无锁化，乐观锁，每次尝试修改的时候，就对比一下，有没有人修改过这个值，没有人修改，自己就修改，如果有人修改过，就重新查出来最新的值，再次重复那个过程
@@ -70,10 +70,10 @@ public final int getAndAddInt(Object o, long offset, int delta) { int v; do { v 
     
     <item>
       <title>并发源码|Hashmap死循环问题与ConcurrentHashmap</title>
-      <link>http://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/</link>
+      <link>https://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/</guid>
+      <guid>https://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/</guid>
       <description>jdk7hashmap死循环问题 在多线程并发环境下。不应该用此容器，而应使用线程安全的容器如ConcurrentHashmap
 其死循环主要是扩容的时候resize方法内调用的transfer方法导致。
 e.next = newTable[i]; newTable[i] = e; 如果两个线程正在处理同一个节点e，那么第一个线程正常执行，但是第二个线程设置e.next=e，因为第一个线程已经将newTable[i]设置为e。节点e现在指向它自己，当调用get（Object）时，它将进入一个无限循环。无限循环则会导致cpu100%，另外因为节点形成了环形，后面的元素无法访问到导致数据丢失
@@ -83,10 +83,10 @@ void transfer(Entry[] newTable) { Entry[] src = table; int newCapacity = newTabl
     
     <item>
       <title>并发源码|synchronized、wait与notify</title>
-      <link>http://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/</link>
+      <link>https://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/</guid>
+      <guid>https://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/</guid>
       <description>synchronized的底层原理 跟jvm及monitor有关。
 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有monitorenter和monitorexit两个指令
 每个对象都是有个关联的monitor对象，即对象的Mark Word。里面有个计数器i，一个线程获取到锁以后i++，并且将锁对象设置为当前线程。释放锁时候i&amp;ndash;，若i为0 表示完全释放锁，将monitor的锁对象设为null
@@ -106,10 +106,10 @@ notify()与notifyall()：前者就唤醒block状态的一个线程，后者唤�
     
     <item>
       <title>并发源码|其他并发容器</title>
-      <link>http://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/</link>
+      <link>https://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/</guid>
+      <guid>https://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/</guid>
       <description>CopyOnWriteArrayList 写时复制的并发Arraylist容器，底层使用锁来实现
 底层使用volatile标记array，保证并发修改后能立即可见。
 另外使用ReentrantLock在进行写操作时加锁
@@ -128,10 +128,10 @@ put的时候，若满则阻塞等待，容器不满再put数据
     
     <item>
       <title>并发源码|并发常用组件</title>
-      <link>http://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/</link>
+      <link>https://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/</guid>
+      <guid>https://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/</guid>
       <description>CountDownLatch：同步等待多个线程完成任务的并发组件
 CyclicBarrier：将工作任务给多线程分而治之的并发组件，此组件比CountDownLatch可重复使用
 案例实战：api服务中对多个接口并发调用后统一合并返回数据，可使用CountDownLatch或者CyclicBarrier并行请求多个接口，全部完成后再统一返回给调用方。用此方法可极大降低请求时间。
@@ -140,10 +140,10 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
     
     <item>
       <title>并发源码|线程池原理</title>
-      <link>http://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/</link>
+      <link>https://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/</guid>
+      <guid>https://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/</guid>
       <description>线程池 线程池的意义：频繁的创建和销毁线程，性能开销比较大。线程池创建一些线程，执行完任务后不立即销毁，可以等待去执行下一个任务
 线程池相关参数：
 /** * 用给定的初始参数创建一个新的ThreadPoolExecutor。 */ public ThreadPoolExecutor(int corePoolSize,//线程池的核心线程数量  int maximumPoolSize,//线程池的最大线程数  long keepAliveTime,//当线程数大于核心线程数时，多余的空闲线程存活的最长时间  TimeUnit unit,//时间单位  BlockingQueue&amp;lt;Runnable&amp;gt; workQueue,//任务队列，用来储存等待执行任务的队列  ThreadFactory threadFactory,//线程工厂，用来创建线程，一般默认即可  RejectedExecutionHandler handler//拒绝策略，当提交的任务过多而不能及时处理时，我们可以定制策略来处理任务  ) 线程池支持5种，Executors静态方法创建：

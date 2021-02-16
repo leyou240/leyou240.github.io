@@ -15,12 +15,12 @@
     <meta property="og:type" content="website">
     <meta name="Keywords" content="乐忧,java,博客,项目管理,python,软件架构">
     <meta name="description" content="专注于Java、软件架构、移动互联网、项目管理、Go语言(golang)等">
-    <meta property="og:url" content="http://leyou240.github.io/">
+    <meta property="og:url" content="https://leyou240.github.io/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml+xml" href="http://leyou240.github.io/index.xml" title="" />
+    <link rel="alternate" type="application/rss+xml+xml" href="https://leyou240.github.io/index.xml" title="" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -43,7 +43,7 @@
             <div class="site-name ">
                 
                     <h1>
-                        <a id="logo" href="http://leyou240.github.io/">
+                        <a id="logo" href="https://leyou240.github.io/">
                             
                         </a>
                     </h1>
@@ -52,9 +52,9 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="http://leyou240.github.io/">首页</a>
+                    <a class="current" href="https://leyou240.github.io/">首页</a>
                     
-                    <a  href="http://leyou240.github.io/archives/" title="归档">归档</a>
+                    <a  href="https://leyou240.github.io/archives/" title="归档">归档</a>
                     
                 </nav>
             </div>
@@ -73,7 +73,7 @@
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/" title="并发源码|Atomicxxx原理">并发源码|Atomicxxx原理</a>
+                <a href="https://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/" title="并发源码|Atomicxxx原理">并发源码|Atomicxxx原理</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -97,13 +97,13 @@ private static final long valueOffset; static { try { valueOffset = unsafe.objec
 public final int getAndAddInt(Object o, long offset, int delta) { int v; do { v = getIntVolatile(o, offset); } while (!compareAndSwapInt(o, offset, v, v + delta)); return v; } （3）API接口：Atomic原子类的各种使用方式
 最底层使用c代码，发送cpu指令，确保CAS操作绝对原子(通过指令来锁掉某一小块内存，并且保证只有一个线程在同一时间可以对此块内存数据做CAS操作)。……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/" title="并发源码|Hashmap死循环问题与ConcurrentHashmap">并发源码|Hashmap死循环问题与ConcurrentHashmap</a>
+                <a href="https://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/" title="并发源码|Hashmap死循环问题与ConcurrentHashmap">并发源码|Hashmap死循环问题与ConcurrentHashmap</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -124,13 +124,13 @@ e.next = newTable[i]; newTable[i] = e; 如果两个线程正在处理同一个�
 而java8中，resize的时候保持了节点的顺序。但同样会有数据丢失的问题
 void transfer(Entry[] newTable) { Entry[] src = table; int newCapacity = newTable.length; for (int j = 0; j &lt; src.length; j++) { Entry&lt;K,V&gt; e = src[j]; if (e != null) { src[j] = null; do { Entry&lt;K,V&gt; next = e.next; int i = indexFor(e.hash, newCapacity); e.next = newTable[i]; newTable[i] = e; e = next; } while (e != null); } } } jdk7与jdk8关于Hashmap的主要区别……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/" title="并发源码|synchronized、wait与notify">并发源码|synchronized、wait与notify</a>
+                <a href="https://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/" title="并发源码|synchronized、wait与notify">并发源码|synchronized、wait与notify</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -161,13 +161,13 @@ wait与notify，必须在synchronized代码块中使用，因为必须是拥有m
 因此wait与notify，必须与synchornized一起，对同一个对象进行使用，这样他们对应的monitor才是一样的
 notify()与notifyall()：前者就唤醒block状态的一个线程，后者唤醒block状态的所有线程……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/" title="并发源码|其他并发容器">并发源码|其他并发容器</a>
+                <a href="https://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/" title="并发源码|其他并发容器">并发源码|其他并发容器</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -197,13 +197,13 @@ take的时候，若为空则阻塞等待，容器非空时再take数据
 put的时候，若满则阻塞等待，容器不满再put数据
 /** Current number of elements */ private final AtomicInteger count = new AtomicInteger(); /** Lock held by take, poll, etc */ private final ReentrantLock takeLock = new ReentrantLock(); /** Wait queue for waiting takes */ private final Condition notEmpty = takeLock.……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/" title="并发源码|并发常用组件">并发源码|并发常用组件</a>
+                <a href="https://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/" title="并发源码|并发常用组件">并发源码|并发常用组件</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -223,13 +223,13 @@ CyclicBarrier：将工作任务给多线程分而治之的并发组件，此组�
 案例实战：api服务中对多个接口并发调用后统一合并返回数据，可使用CountDownLatch或者CyclicBarrier并行请求多个接口，全部完成后再统一返回给调用方。用此方法可极大降低请求时间。
 Semaphore：等待指定数量的线程完成任务的并发组件。此组件设置一个指定的数量i，可以有&gt;=i个线程来并发执行。一旦完成了i个任务后，就可以执行接下来的方法了。……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc06_%E5%B9%B6%E5%8F%91%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/" title="并发源码|线程池原理">并发源码|线程池原理</a>
+                <a href="https://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/" title="并发源码|线程池原理">并发源码|线程池原理</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -249,13 +249,13 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
 /** * 用给定的初始参数创建一个新的ThreadPoolExecutor。 */ public ThreadPoolExecutor(int corePoolSize,//线程池的核心线程数量  int maximumPoolSize,//线程池的最大线程数  long keepAliveTime,//当线程数大于核心线程数时，多余的空闲线程存活的最长时间  TimeUnit unit,//时间单位  BlockingQueue&lt;Runnable&gt; workQueue,//任务队列，用来储存等待执行任务的队列  ThreadFactory threadFactory,//线程工厂，用来创建线程，一般默认即可  RejectedExecutionHandler handler//拒绝策略，当提交的任务过多而不能及时处理时，我们可以定制策略来处理任务  ) 线程池支持5种，Executors静态方法创建：
  FixedThreadPool：固定数量的线程，其他线程放入无界等待队列 CachedThreadPool：线程数量不固定，无论多少任务都会不停的创建线程。线程空闲一定时间，释放线程 SingleThread：线程池里只有一个线程，其他线程放入无界等待队列 ScheduledThread：提交的线程，会在等待的时间过后才会去执行 WorkStealingPool：底层使用forkjoin来执行  // 存放线程池的运行状态 (runState) 和线程池内有效线程的数量 (workerCount)  private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0)); /** * Set containing all worker threads in pool. Accessed only when * holding mainLock. */ private final HashSet&lt;Worker&gt; workers = new HashSet&lt;Worker&gt;(); private static int workerCountOf(int c) { return c &amp; CAPACITY; } private final BlockingQueue&lt;Runnable&gt; workQueue; public void execute(Runnable command) { // 如果任务为null，则抛出异常。  if (command == null) throw new NullPointerException(); // ctl 中保存的线程池当前的一些状态信息  int c = ctl.……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="SpringCloud源码| 从单体到微服务">SpringCloud源码| 从单体到微服务</a>
+                <a href="https://leyou240.github.io/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="SpringCloud源码| 从单体到微服务">SpringCloud源码| 从单体到微服务</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -275,7 +275,7 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
 3、扩容问题 之前其他服务(cpu/内存/网络/io)问题会导致服务宕机，现在各自独立部署，独立扩容。节省资源
 4、可用性问题 依赖的其他服务宕机，是他自己的事。做好熔断降级就好了。……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sc_%E4%BB%8E%E5%8D%95%E4%BD%93%E5%88%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1/">阅读全文</a></p>
     </article>
     
     
@@ -285,17 +285,17 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
 <ol class="page-navigator">
     
     <li class="prev">
-        <a href="http://leyou240.github.io/">上一页</a>
+        <a href="https://leyou240.github.io/">上一页</a>
     </li>
     
 
     
     <li >
-        <a href="http://leyou240.github.io/">1</a>
+        <a href="https://leyou240.github.io/">1</a>
     </li>
     
     <li  class="current">
-        <a href="http://leyou240.github.io/page/2/">2</a>
+        <a href="https://leyou240.github.io/page/2/">2</a>
     </li>
     
 
@@ -308,7 +308,7 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
 
                     <footer id="footer">
     <div>
-        &copy; 2021 <a href="http://leyou240.github.io/"> By </a>
+        &copy; 2021 <a href="https://leyou240.github.io/"> By 乐忧</a>
         
     </div>
     <br />
@@ -341,10 +341,10 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
 
                 <div id="secondary">
     <section class="widget">
-        <form id="search" action='http://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='https://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="http://leyou240.github.io/">
+      <input type="hidden" name="sitesearch" value="https://leyou240.github.io/">
       <button type="submit" class="submit icon-search"></button>
 </form>
     </section>
@@ -354,43 +354,43 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
 <ul class="widget-list">
     
     <li>
-        <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
+        <a href="https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
+        <a href="https://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
+        <a href="https://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
+        <a href="https://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
+        <a href="https://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
+        <a href="https://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
+        <a href="https://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
+        <a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
+        <a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
+        <a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
     </li>
     
 </ul>
@@ -433,13 +433,13 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li><a href="http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
+    <li><a href="https://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
     
-    <li><a href="http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
+    <li><a href="https://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
     
-    <li><a href="http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
+    <li><a href="https://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
     
-    <li><a href="http://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
+    <li><a href="https://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
     
 </ul>
     </section>
@@ -448,13 +448,13 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
         <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
-    <a href="http://leyou240.github.io/tags/jdk/">jdk</a>
+    <a href="https://leyou240.github.io/tags/jdk/">jdk</a>
     
-    <a href="http://leyou240.github.io/tags/juc/">juc</a>
+    <a href="https://leyou240.github.io/tags/juc/">juc</a>
     
-    <a href="http://leyou240.github.io/tags/springcloud/">SpringCloud</a>
+    <a href="https://leyou240.github.io/tags/springcloud/">SpringCloud</a>
     
-    <a href="http://leyou240.github.io/tags/tcc/">tcc</a>
+    <a href="https://leyou240.github.io/tags/tcc/">tcc</a>
     
 </div>
     </section>
@@ -464,7 +464,7 @@ Semaphore：等待指定数量的线程完成任务的并发组件。此组件�
     <section class="widget">
         <h3 class="widget-title">其它</h3>
         <ul class="widget-list">
-            <li><a href="http://leyou240.github.io/index.xml">文章 RSS</a></li>
+            <li><a href="https://leyou240.github.io/index.xml">文章 RSS</a></li>
         </ul>
     </section>
 </div>

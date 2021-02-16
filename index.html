@@ -15,12 +15,12 @@
     <meta property="og:type" content="website">
     <meta name="Keywords" content="乐忧,java,博客,项目管理,python,软件架构">
     <meta name="description" content="专注于Java、软件架构、移动互联网、项目管理、Go语言(golang)等">
-    <meta property="og:url" content="http://leyou240.github.io/">
+    <meta property="og:url" content="https://leyou240.github.io/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml+xml" href="http://leyou240.github.io/index.xml" title="" />
+    <link rel="alternate" type="application/rss+xml+xml" href="https://leyou240.github.io/index.xml" title="" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -43,7 +43,7 @@
             <div class="site-name ">
                 
                     <h1>
-                        <a id="logo" href="http://leyou240.github.io/">
+                        <a id="logo" href="https://leyou240.github.io/">
                             
                         </a>
                     </h1>
@@ -52,9 +52,9 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="http://leyou240.github.io/">首页</a>
+                    <a class="current" href="https://leyou240.github.io/">首页</a>
                     
-                    <a  href="http://leyou240.github.io/archives/" title="归档">归档</a>
+                    <a  href="https://leyou240.github.io/archives/" title="归档">归档</a>
                     
                 </nav>
             </div>
@@ -73,7 +73,7 @@
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
+                <a href="https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -98,13 +98,13 @@ LinkedList 底层使用(双向)链表，适合插入较多
 使用场景 ArrayList：一般场景，都是用ArrayList来代表一个集合，只要别频繁的往里面插入和灌入大量的元素就可以了，遍历，或者随机查，都可以。
 LinkedList：适合，频繁的在list中插入和删除某个元素，然后尤其是LinkedList他其实是可以当做队列来用的，这个东西的话呢，我们后面看源码的时候，可以来看一下，先进先出，在list尾部怼进去一个元素，从头部拿出来一个元素。如果要在内存里实现一个基本的队列的话，可以用LinkedList……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
+                <a href="https://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -124,13 +124,13 @@ LinkedList：适合，频繁的在list中插入和删除某个元素，然后尤
 fail-fast机制是什么东西，这个在开发的时候是一个比较常见的异常，ConcurrentModificationException
 核心变量 static final int DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4; // aka 16 //应该是数组的默认的初始大小，是16，这个跟ArrayList是不一样的，初始的默认大小是10 //这个数组的大小，一般会自己手动指定一下，就跟你用ArrayList一样，你需要去预估一下你的这个数据结构里会放多少key-value对，指定的大一些，避免频繁的扩容 static final float DEFAULT_LOAD_FACTOR = 0.75f; //默认的负载因子，如果你在数组里的元素的个数达到了数组大小（16） * 负载因子（0.75f），默认是达到12个元素，就会进行数组的扩容 static class Node&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; { final int hash; final K key; V value; Node&lt;K,V&gt; next; } //这是一个很关键的内部类，他其实是代表了一个key-value对，里面包含了key的hash值，key，value，还有就是可以有一个next的指针，指向下一个Node，也就是指向单向链表中的下一个节点 //通过这个next指针，就可以形成一个链表 transient Node&lt;K,V&gt;[] table; //这个是什么东东？Node&lt;K, V&gt;[]，这个数组就是所谓的map里的核心数据结构的数组，数组的元素就可以看到是Node类型的，天然就可以挂成一个链表，单向链表，Node里面只有一个next指针 transient int size; //这个size代表的是就是当前hashmap中有多少个key-value对，如果这个数量达到了指定大小 * 负载因子，那么就会进行数组的扩容 int threshold; //这个值，其实就是说capacity（就是默认的数组的大小），就是说capacity * loadFactory，就是threshold，如果size达到了threshold，那么就会进行数组的扩容，如果面试这么回答，你就是在打自己的脸。扩容的时机是size&gt;threshold  //负载因子，默认值，threshold，扩容，扩容，rehash的算法，JDK 1.……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
+                <a href="https://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -148,13 +148,13 @@ fail-fast机制是什么东西，这个在开发的时候是一个比较常见�
             eureka server启动流程 EurekaBootStrap#contextInitialized(ServletContextEvent) 方法进行初始化
 @Override public void contextInitialized(ServletContextEvent event) { try { //1、初始化eureka相关环境  initEurekaEnvironment(); //2、初始化eureka的serverContext  initEurekaServerContext(); ServletContext sc = event.getServletContext(); sc.setAttribute(EurekaServerContext.class.getName(), serverContext); } catch (Throwable e) { logger.error(&#34;Cannot bootstrap eureka server :&#34;, e); throw new RuntimeException(&#34;Cannot bootstrap eureka server :&#34;, e); } } /** * Users can override to initialize the environment themselves. */ protected void initEurekaEnvironment() throws Exception { logger.info(&#34;Setting the eureka configuration..&#34;); AbstractConfiguration configInstance = ConfigurationManager.getConfigInstance(); String dataCenter = configInstance.……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/sc_eureka/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sc_eureka/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
+                <a href="https://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -172,13 +172,13 @@ fail-fast机制是什么东西，这个在开发的时候是一个比较常见�
             feign核心组件  Encoder和Decoder：编解码组件。SpringEncoder和ResponseEntityDecoder Contract：解析spring mvc相关组件。SpringMvcContract Feign.Builder：FeignClient的一个实例构造器，builder模式 FeignClient：LoadBalancerFeignClient ，底层整合ribbon  feign的使用和自定义配置
 @FeignClient(name = “ServiceA”, configuration = MyConfiguration.class) public interface ServiceAClient { } public class MyConfiguration { @Bean public RequestInterceptor requestInterceptor() { return new MyRequestInterceptor(); } } feign的入口  @EnableFeignClients，使用FeignClientsRegistrar扫描包下面的所有FeignClient。 使用SpringMvcContract解析相关spring mvc注解，生成LoadBalancerFeignClient动态代理 FeignClient底层使用ribbon进行负载均衡，调用对应的远程服务  @Import(FeignClientsRegistrar.class) public @interface EnableFeignClients { //省略 } //FeignClientsRegistrar类的重要方法 	@Override public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) { //注册bean 	registerDefaultConfiguration(metadata, registry); //扫描所有@FeignClient，解析注解中的所有属性。注册对应的FeignClient 	registerFeignClients(metadata, registry); } private void registerDefaultConfiguration(AnnotationMetadata metadata, BeanDefinitionRegistry registry) { Map&lt;String, Object&gt; defaultAttrs = metadata .……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/sc_feign/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sc_feign/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
+                <a href="https://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -201,13 +201,13 @@ hystrix资源隔离 共有两种：线程池的资源隔离，信号量的资源
 feign集成hystrix以后，HystrixFeign.Builder则被替换为HystrixFeign.Builder。以支持hystrix相关组件
 //ReflectiveFeign 类中 public &lt;T&gt; T newInstance(Target&lt;T&gt; target) { Map&lt;String, MethodHandler&gt; nameToHandler = targetToHandlersByName.apply(target); //对应FeignClient中的方法，及代理类  Map&lt;Method, MethodHandler&gt; methodToHandler = new LinkedHashMap&lt;Method, MethodHandler&gt;(); List&lt;DefaultMethodHandler&gt; defaultMethodHandlers = new LinkedList&lt;DefaultMethodHandler&gt;(); for (Method method : target.type().getMethods()) { if (method.getDeclaringClass() == Object.class) { continue; } else if (Util.isDefault(method)) { DefaultMethodHandler handler = new DefaultMethodHandler(method); defaultMethodHandlers.add(handler); methodToHandler.put(method, handler); } else { methodToHandler.put(method, nameToHandler.get(Feign.configKey(target.type(), method))); } } //调用HystrixFeign.……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/sc_hystrix/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sc_hystrix/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
+                <a href="https://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -231,13 +231,13 @@ org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration中�
 使用RestTemplateCustomizer对每个restTemplate，使用LoadBalancerInterceptor进行定制。
 @Bean @ConditionalOnMissingBean public LoadBalancerRequestFactory loadBalancerRequestFactory( LoadBalancerClient loadBalancerClient) { return new LoadBalancerRequestFactory(loadBalancerClient, this.transformers); } @Configuration(proxyBeanMethods = false) @ConditionalOnMissingClass(&#34;org.springframework.retry.support.RetryTemplate&#34;) static class LoadBalancerInterceptorConfig { //配置拦截器 	@Bean public LoadBalancerInterceptor loadBalancerInterceptor( LoadBalancerClient loadBalancerClient, LoadBalancerRequestFactory requestFactory) { return new LoadBalancerInterceptor(loadBalancerClient, requestFactory); } //RestTemplate定制化，使用LoadBalancerInterceptor 	@Bean @ConditionalOnMissingBean public RestTemplateCustomizer restTemplateCustomizer( final LoadBalancerInterceptor loadBalancerInterceptor) { return restTemplate -&gt; { List&lt;ClientHttpRequestInterceptor&gt; list = new ArrayList&lt;&gt;( restTemplate.……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/sc_ribbon/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sc_ribbon/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
+                <a href="https://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -262,13 +262,13 @@ pre过滤器
 经过断点调试，核心逻辑为此方法ZuulServlet#service
 @Override public void service(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse) throws ServletException, IOException { try { init((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse); // Marks this request as having passed through the &#34;Zuul engine&#34;, as opposed to servlets  // explicitly bound in web.……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/sc_zuul/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sc_zuul/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
+                <a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -301,13 +301,13 @@ pre过滤器
 读已提交 事务1中，将张三修改为李四
 事务2中，第一次读到了id=1 name=张三……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
+                <a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -342,13 +342,13 @@ instance=new Singleton() 分为3步
 3、double check保证对象被正常创建（类加载创建过程多线程问题）
 public class Singleton { private static volatile Singleton instance; private Singleton() { } public Singleton getInstance(){ if (instance == null) { synchronized (Singleton.class) { if (instance == null) { instance=new Singleton(); } } } return instance; } } ……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
+                <a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -375,7 +375,7 @@ Condition.await()原理：将自己加入condition等待队列、释放锁、挂
 signal唤醒的过程，大概的意思，就是把condition等待队列中的元素，转化为一个加锁等待队列中的元素
 锁优化 TODO：……
         </div>
-        <p class="readmore"><a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/">阅读全文</a></p>
     </article>
     
     
@@ -387,17 +387,17 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
 
     
     <li  class="current">
-        <a href="http://leyou240.github.io/">1</a>
+        <a href="https://leyou240.github.io/">1</a>
     </li>
     
     <li >
-        <a href="http://leyou240.github.io/page/2/">2</a>
+        <a href="https://leyou240.github.io/page/2/">2</a>
     </li>
     
 
     
     <li class="next">
-        <a href="http://leyou240.github.io/page/2/">下一页</a>
+        <a href="https://leyou240.github.io/page/2/">下一页</a>
     </li>
     
 </ol>
@@ -408,7 +408,7 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
 
                     <footer id="footer">
     <div>
-        &copy; 2021 <a href="http://leyou240.github.io/"> By </a>
+        &copy; 2021 <a href="https://leyou240.github.io/"> By 乐忧</a>
         
     </div>
     <br />
@@ -441,10 +441,10 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
 
                 <div id="secondary">
     <section class="widget">
-        <form id="search" action='http://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='https://leyou240.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="http://leyou240.github.io/">
+      <input type="hidden" name="sitesearch" value="https://leyou240.github.io/">
       <button type="submit" class="submit icon-search"></button>
 </form>
     </section>
@@ -454,43 +454,43 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
 <ul class="widget-list">
     
     <li>
-        <a href="http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
+        <a href="https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
+        <a href="https://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/" title="Hashmap源码">Hashmap源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
+        <a href="https://leyou240.github.io/post/sc_eureka/" title="SpringCloud源码| eureka源码">SpringCloud源码| eureka源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
+        <a href="https://leyou240.github.io/post/sc_feign/" title="SpringCloud源码| feign源码">SpringCloud源码| feign源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
+        <a href="https://leyou240.github.io/post/sc_hystrix/" title="SpringCloud源码| hystrix源码">SpringCloud源码| hystrix源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
+        <a href="https://leyou240.github.io/post/sc_ribbon/" title="SpringCloud源码| ribbon源码">SpringCloud源码| ribbon源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
+        <a href="https://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
+        <a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
+        <a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
     </li>
     
     <li>
-        <a href="http://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
+        <a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
     </li>
     
 </ul>
@@ -533,13 +533,13 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li><a href="http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
+    <li><a href="https://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/">jdk源码 (2)</a></li>
     
-    <li><a href="http://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
+    <li><a href="https://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
     
-    <li><a href="http://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
+    <li><a href="https://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
     
-    <li><a href="http://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
+    <li><a href="https://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
     
 </ul>
     </section>
@@ -548,13 +548,13 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
         <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
-    <a href="http://leyou240.github.io/tags/jdk/">jdk</a>
+    <a href="https://leyou240.github.io/tags/jdk/">jdk</a>
     
-    <a href="http://leyou240.github.io/tags/juc/">juc</a>
+    <a href="https://leyou240.github.io/tags/juc/">juc</a>
     
-    <a href="http://leyou240.github.io/tags/springcloud/">SpringCloud</a>
+    <a href="https://leyou240.github.io/tags/springcloud/">SpringCloud</a>
     
-    <a href="http://leyou240.github.io/tags/tcc/">tcc</a>
+    <a href="https://leyou240.github.io/tags/tcc/">tcc</a>
     
 </div>
     </section>
@@ -564,7 +564,7 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
     <section class="widget">
         <h3 class="widget-title">其它</h3>
         <ul class="widget-list">
-            <li><a href="http://leyou240.github.io/index.xml">文章 RSS</a></li>
+            <li><a href="https://leyou240.github.io/index.xml">文章 RSS</a></li>
         </ul>
     </section>
 </div>

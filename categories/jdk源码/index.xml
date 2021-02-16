@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>jdk源码 on </title>
-    <link>http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/</link>
+    <link>https://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/</link>
     <description>Recent content in jdk源码 on </description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 13 Dec 2019 21:00:00 +0800</lastBuildDate><atom:link href="http://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Dec 2019 21:00:00 +0800</lastBuildDate><atom:link href="https://leyou240.github.io/categories/jdk%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ArrayList和LinkedList集合源码</title>
-      <link>http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/</link>
+      <link>https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/</guid>
+      <guid>https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/</guid>
       <description>ArrayList 底层使用数组实现，适合插入较少
 适合随机查找O(1)，原理：地址连续
 扩容O(n) 源码中int newCapacity = oldCapacity + (oldCapacity &amp;raquo; 1);即扩容为原来的1.5倍
@@ -25,10 +25,10 @@ LinkedList：适合，频繁的在list中插入和删除某个元素，然后尤
     
     <item>
       <title>Hashmap源码</title>
-      <link>http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/</link>
+      <link>https://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/</link>
       <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
       
-      <guid>http://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/</guid>
+      <guid>https://leyou240.github.io/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/</guid>
       <description>Hashmap 对key进行hash，放到数组对应的位置 p = tab[i = (n - 1) &amp;amp; hash] 。i的位置为i = (n - 1) &amp;amp; hash
 从JDK8以后结构为：数组 + 链表 + 红黑树，从原来的hash冲突时由纯链表变为，当链表长度大于8以后变为红黑树。
 fail-fast机制是什么东西，这个在开发的时候是一个比较常见的异常，ConcurrentModificationException
