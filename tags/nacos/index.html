@@ -82,6 +82,33 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">nacos客户端是如何进行服务发现的？</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年12月13日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81'>spring cloud alibaba源码</a>
+            
+        </div>
+        
+        <div class="post-content">
+            本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。
+https://xie.infoq.cn/article/d342a914b8754dd52f5709b43
+服务心跳、服务剔除 这些都与eureka类似。定时访问对应的接口即可
+与eureka不太一样的是，服务同步如果是ephemeral则异步更新，达到最终一致性 AP。如果是持久化的注册，则使用raft协议同步 CP。
+nacos1.x版本使用http进行通信、2.x版本做了重构改为使用grpc进行内部节点以及对外通信，目前为beta版。……
+            <p class="readmore"><a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/">nacos注册中心初始化</a>
             </h1>
         </header>
@@ -102,33 +129,6 @@
 //PersistentConsistencyServiceDelegateImpl private BasePersistentServiceProcessor createNewPersistentServiceProcessor(ProtocolManager protocolManager, ClusterVersionJudgement versionJudgement) throws Exception { //根据相关配置，判断到底是standlone还是raft模式  final BasePersistentServiceProcessor processor = EnvUtil.getStandaloneMode() ? new StandalonePersistentServiceProcessor(versionJudgement) : new PersistentServiceProcessor(protocolManager, versionJudgement); //调用基类的方法  processor.afterConstruct(); return processor; } 具体的代码逻辑
 //PersistentServiceProcessor @Override public void afterConstruct() { super.afterConstruct(); this.protocol.addRequestProcessors(Collections.singletonList(this)); //监听元数据的状态  this.protocol.protocolMetaData() .subscribe(Constants.NAMING_PERSISTENT_SERVICE_GROUP, MetadataKey.LEADER_META_DATA, (o, arg) -&gt; hasLeader = StringUtils.……
             <p class="readmore"><a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/">阅读全文</a></p>
-        </div>
-    </article>
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">客户端是如何进行服务发现的？</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2020年12月13日
-        </date>
-        
-        <div class="post-meta meta-category">
-            |
-            
-            <a href='/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81'>spring cloud alibaba源码</a>
-            
-        </div>
-        
-        <div class="post-content">
-            本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。图片原始地址https://xie.infoq.cn/article/d342a914b8754dd52f5709b43
-服务心跳、服务剔除 这些都与eureka类似。定时访问对应的接口即可
-与eureka不太一样的是，服务同步如果是ephemeral则异步更新，达到最终一致性 AP。如果是持久化的注册，则使用raft协议同步 CP。
-nacos1.x版本使用http进行通信、2.x版本做了重构改为使用grpc进行内部节点以及对外通信，目前为beta版。
-……
-            <p class="readmore"><a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">阅读全文</a></p>
         </div>
     </article>
     
@@ -189,11 +189,11 @@ nacos1.x版本使用http进行通信、2.x版本做了重构改为使用grpc进�
 <ul class="widget-list">
     
     <li>
-        <a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/" title="nacos注册中心初始化">nacos注册中心初始化</a>
+        <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/" title="nacos客户端是如何进行服务发现的？">nacos客户端是如何进行服务发现的？</a>
     </li>
     
     <li>
-        <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/" title="客户端是如何进行服务发现的？">客户端是如何进行服务发现的？</a>
+        <a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/" title="nacos注册中心初始化">nacos注册中心初始化</a>
     </li>
     
     <li>
