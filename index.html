@@ -73,6 +73,59 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/" title="nacos注册中心初始化">nacos注册中心初始化</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年12月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81'>spring cloud alibaba源码</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            注册中心启动类就一个springboot应用，看不出什么东西
+@EnableScheduling @SpringBootApplication(scanBasePackages = {&#34;com.alibaba.nacos.naming&#34;, &#34;com.alibaba.nacos.core&#34;}) public class NamingApp { public static void main(String[] args) { SpringApplication.run(NamingApp.class, args); } } 通过官方文档已经一些分析，得知底层是用了raft协议来做集群同步
+//PersistentConsistencyServiceDelegateImpl private BasePersistentServiceProcessor createNewPersistentServiceProcessor(ProtocolManager protocolManager, ClusterVersionJudgement versionJudgement) throws Exception { //根据相关配置，判断到底是standlone还是raft模式  final BasePersistentServiceProcessor processor = EnvUtil.getStandaloneMode() ? new StandalonePersistentServiceProcessor(versionJudgement) : new PersistentServiceProcessor(protocolManager, versionJudgement); //调用基类的方法  processor.afterConstruct(); return processor; } 具体的代码逻辑
+//PersistentServiceProcessor @Override public void afterConstruct() { super.afterConstruct(); this.protocol.addRequestProcessors(Collections.singletonList(this)); //监听元数据的状态  this.protocol.protocolMetaData() .subscribe(Constants.NAMING_PERSISTENT_SERVICE_GROUP, MetadataKey.LEADER_META_DATA, (o, arg) -&gt; hasLeader = StringUtils.……
+        </div>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/">阅读全文</a></p>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/" title="客户端是如何进行服务发现的？">客户端是如何进行服务发现的？</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年12月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81'>spring cloud alibaba源码</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。图片原始地址https://xie.infoq.cn/article/d342a914b8754dd52f5709b43
+服务心跳、服务剔除 这些都与eureka类似。定时访问对应的接口即可
+与eureka不太一样的是，服务同步如果是ephemeral则异步更新，达到最终一致性 AP。如果是持久化的注册，则使用raft协议同步 CP。
+nacos1.x版本使用http进行通信、2.x版本做了重构改为使用grpc进行内部节点以及对外通信，目前为beta版。
+……
+        </div>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">阅读全文</a></p>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
             </h1>
         </header>
@@ -304,80 +357,6 @@ pre过滤器
         <p class="readmore"><a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">阅读全文</a></p>
     </article>
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2019年12月13日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='/categories/juc%E6%BA%90%E7%A0%81'>juc源码</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            主内存的数据会被加载到cpu本地缓存里去，cpu后面会读写自己的缓存
-缓存模型下的并发问题
-java内存模型
-read（从主存读取），load（将主存读取到的值写入工作内存），use（从工作内存读取数据来计算），assign（将计算好的值重新赋值到工作内存中），store（将工作内存数据写入主存），write（将store过去的变量值赋值给主存中的变量）
-volatile保持内存可见的原理 就是说一定会强制保证说assign之后，就立马执行store + write，刷回到主内存里去。并且将其他工作内存中的状态改为过期
-volatile无法保持原子性的原理 2个线程同时use后，线程1assign了以后，刷回了主内存。但线程2已经use了，不需要在从内存中加载。此时使用的旧的值。
-底层使用cpu的MESI缓存一致性协议，强制刷主内存，过期其他线程中的工作内存
-volatile内存屏障及happen before原则 在被volatile标记的字段读写前后都设置内存屏障，防止指令重排。
-指令重排的happen before原则，是给开发JVM的人看的。
-大概有几个原则
-程序次序规则：一个线程内，按照代码顺序，书写在前面的操作先行发生于书写在后面的操作
-lock规则：一个unLock操作先行发生于后面对同一个锁的lock操作
-volatile变量规则：必须保证是先写，再读
-volatile的实际用途和场景 double check的单例模式，使用volatile防止指令重排
-instance=new Singleton() 分为3步
-1、volatile保证并发可见性
-2、synchronized保证有序性
-3、double check保证对象被正常创建（类加载创建过程多线程问题）
-public class Singleton { private static volatile Singleton instance; private Singleton() { } public Singleton getInstance(){ if (instance == null) { synchronized (Singleton.class) { if (instance == null) { instance=new Singleton(); } } } return instance; } } ……
-        </div>
-        <p class="readmore"><a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/">阅读全文</a></p>
-    </article>
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2019年12月13日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='/categories/juc%E6%BA%90%E7%A0%81'>juc源码</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            AQS原理 底层使用如下组件
-private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时state递减，若state=0时将owner设置为null，并且使用LockSupport.unpark(s.thread);方法唤醒等待队列中的第一个线程 //其他线程来获取锁时，若失败，则加入等待队列(双向链表)，并且使用LockSupport.park(this);休眠此线程  private transient Thread exclusiveOwnerThread; //标识当前线程所有者  //一个双向链表作为一个队列来使用，存放等待队列(保存待加锁的线程)。  //非公平锁：新来一个线程直接判断能不能加锁，若能加锁则直接加锁，不能加锁才放入等待队列 //公平锁：等待队列中的线程依次加锁，体现的“公平”的特点 ReentratLock 多个线程争抢锁
-尝试加锁，public boolean tryLock(long timeout, TimeUnit unit) 如果加锁不成功，则等待一段时间不成功则设置当前线程waitstate为SIGNAL状态，并持续重试，若最终超过了等待时间则从队列中移除
-ReentrantReadWriteLock读写锁 使用state的高低16位(因为int是32位)来标识读锁(高16位)和写锁(低16位)，非0表示已经加过锁了
-读锁，可以同时被多个线程同时持有。读请求可以并发起来
-写锁，则是互斥的
-Condition 可重入锁可以创建Condition，主要有2个方法await与notify/notifyAll。 await等待唤醒，await与notify/notifyAll唤醒对应conditionawait的线程。
-Condition.await()原理：将自己加入condition等待队列、释放锁、挂起自己
-如果在加锁等待队列里有人阻塞，会有unpark的过程，唤醒加锁等待队列中的队头元素的那个过程
-signal唤醒的过程，大概的意思，就是把condition等待队列中的元素，转化为一个加锁等待队列中的元素
-锁优化 TODO：……
-        </div>
-        <p class="readmore"><a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/">阅读全文</a></p>
-    </article>
-    
     
 
 
@@ -454,6 +433,14 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
 <ul class="widget-list">
     
     <li>
+        <a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/" title="nacos注册中心初始化">nacos注册中心初始化</a>
+    </li>
+    
+    <li>
+        <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/" title="客户端是如何进行服务发现的？">客户端是如何进行服务发现的？</a>
+    </li>
+    
+    <li>
         <a href="https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
     </li>
     
@@ -483,14 +470,6 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
     
     <li>
         <a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
-    </li>
-    
-    <li>
-        <a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
-    </li>
-    
-    <li>
-        <a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
     </li>
     
 </ul>
@@ -537,6 +516,8 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
     
     <li><a href="https://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
     
+    <li><a href="https://leyou240.github.io/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81/">spring cloud alibaba源码 (2)</a></li>
+    
     <li><a href="https://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
     
     <li><a href="https://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
@@ -551,6 +532,8 @@ signal唤醒的过程，大概的意思，就是把condition等待队列中的�
     <a href="https://leyou240.github.io/tags/jdk/">jdk</a>
     
     <a href="https://leyou240.github.io/tags/juc/">juc</a>
+    
+    <a href="https://leyou240.github.io/tags/nacos/">nacos</a>
     
     <a href="https://leyou240.github.io/tags/springcloud/">SpringCloud</a>
     

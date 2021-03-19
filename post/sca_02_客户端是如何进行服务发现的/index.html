@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>并发源码|Atomicxxx原理 | </title>
-    <meta property="og:title" content="并发源码|Atomicxxx原理 - ">
+    <title>客户端是如何进行服务发现的？ | </title>
+    <meta property="og:title" content="客户端是如何进行服务发现的？ - ">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2019-12-13T21:00:00&#43;08:00'>
+    <meta property="article:published_time" content='2020-12-13T21:00:00&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2019-12-13T21:00:00&#43;08:00'>
+    <meta property="article:modified_time" content='2020-12-13T21:00:00&#43;08:00'>
         
     <meta name="Keywords" content="乐忧,java,博客,项目管理,python,软件架构">
-    <meta name="description" content="并发源码|Atomicxxx原理">
+    <meta name="description" content="客户端是如何进行服务发现的？">
         
     <meta name="author" content="">
-    <meta property="og:url" content="https://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/">
+    <meta property="og:url" content="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -137,12 +137,7 @@
 <div class="post-toc" style="position: absolute; top: 188px;">
     <h2 class="post-toc-title">文章目录</h2>
     <div class="post-toc-content">
-        <nav id="TableOfContents">
-  <ul>
-    <li><a href="#atomicinteger原子类底层的一些原理">AtomicInteger原子类底层的一些原理</a></li>
-    <li><a href="#cas的问题">CAS的问题</a></li>
-  </ul>
-</nav>
+        <nav id="TableOfContents"></nav>
     </div>
 </div>
 <script type="text/javascript">
@@ -174,16 +169,16 @@
 </script>
     <article class="post">
         <header>
-            <h1 class="post-title">并发源码|Atomicxxx原理</h1>
+            <h1 class="post-title">客户端是如何进行服务发现的？</h1>
         </header>
         <date class="post-meta meta-date">
-            2019年12月13日
+            2020年12月13日
         </date>
         
         <div class="post-meta">
             <span>|</span>
             
-            <span class="meta-category"><a href='/categories/juc%E6%BA%90%E7%A0%81'>juc源码</a></span>
+            <span class="meta-category"><a href='/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81'>spring cloud alibaba源码</a></span>
             
         </div>
         
@@ -201,55 +196,13 @@
         </div>
         
         <div class="post-content">
-            <h2 id="atomicinteger原子类底层的一些原理">AtomicInteger原子类底层的一些原理</h2>
-<p>AtomicLong、AtomicBoolean、AtomicReference、LongAdder等</p>
-<p>都是无锁化或者叫乐观锁，判断此时此刻是否是某个值，如果是则修改，不是则重新查询一个最新的值，再次执行判断。这个操作叫CAS，compare and set(swap jdk8及以后)</p>
-<p>Atomic原子类底层核心的原理就是CAS，无锁化，乐观锁，每次尝试修改的时候，就对比一下，有没有人修改过这个值，没有人修改，自己就修改，如果有人修改过，就重新查出来最新的值，再次重复那个过程</p>
-<p>源码：</p>
-<p>（1）变量的offset，volatile value 使其值对其他线程可见</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> valueOffset<span style="color:#f92672">;</span> 
-
-  <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
-
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-
-      valueOffset <span style="color:#f92672">=</span> unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">objectFieldOffset</span>
-
-        <span style="color:#f92672">(</span>AtomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">));</span>
-
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception ex<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span>ex<span style="color:#f92672">);</span> <span style="color:#f92672">}</span>
-
-  <span style="color:#f92672">}</span> 
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> value<span style="color:#f92672">;</span>
-</code></pre></div><p>（2）Unsafe：核心类，负责执行CAS操作</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAndAddInt</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> offset<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> delta<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">int</span> v<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">do</span> <span style="color:#f92672">{</span>
-        v <span style="color:#f92672">=</span> getIntVolatile<span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> offset<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">while</span> <span style="color:#f92672">(!</span>compareAndSwapInt<span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> offset<span style="color:#f92672">,</span> v<span style="color:#f92672">,</span> v <span style="color:#f92672">+</span> delta<span style="color:#f92672">));</span>
-    <span style="color:#66d9ef">return</span> v<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>（3）API接口：Atomic原子类的各种使用方式</p>
-<p>最底层使用c代码，发送cpu指令，确保CAS操作绝对原子(通过指令来锁掉某一小块内存，并且保证只有一个线程在同一时间可以对此块内存数据做CAS操作)。</p>
-<h2 id="cas的问题">CAS的问题</h2>
-<ol>
-<li>
-<p>ABA问题</p>
-<p>如果某个值一开始是A，后来变成了B，然后又变成了A，你本来期望的是值如果是第一个A才会设置新值，结果第二个A一比较也ok，也设置了新值，跟期望是不符合的。所以atomic包里有AtomicStampedReference类，就是会比较两个值的引用是否一致，如果一致，才会设置新值</p>
-</li>
-<li>
-<p>无限循环(自旋)</p>
-<p>大家看源码就知道Atomic类设置值的时候会进入一个无限循环，只要不成功，就不停循环再次尝试，这个在高并发修改一个值的时候其实挺常见的，比如你用AtomicInteger在内存里搞一个原子变量，然后高并发下，多线程频繁修改，其实可能会导致这个compareAndSet()里要循环N次才设置成功，所以还是要考虑到的。JDK 1.8引入的LongAdder来解决，是一个重点，分段CAS思路</p>
-<p>LongAdder</p>
-<p>大量线程并发更新一个原子类的时候，天然的一个问题就是自旋，会导致并发性能还是有待提升，比synchronized当然好很多了</p>
-<p>分段迁移，某一个线程如果对一个Cell更新的时候，发现说出现了很难更新他的值，出现了多次自旋的一个问题，如果他CAS失败了，自动迁移段，他会去尝试更新别的Cell的值，这样的话就可以让一个线程不会盲目的等待一个cell的值</p>
-</li>
-<li>
-<p>多原子变量问题</p>
-<p>AtomicXXX类，只能保证一个变量的原子性，但是如果多个变量呢？你可以用AtomicReference，这个是封装自定义对象的，多个变量可以放一个自定义对象里，然后他会检查这个对象的引用是不是一个。</p>
-</li>
-</ol>
+            <p>本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。图片原始地址https://xie.infoq.cn/article/d342a914b8754dd52f5709b43</p>
+<p>服务心跳、服务剔除  这些都与eureka类似。定时访问对应的接口即可</p>
+<p>与eureka不太一样的是，服务同步如果是ephemeral则异步更新，达到最终一致性 AP。如果是持久化的注册，则使用raft协议同步 CP。</p>
+<p>nacos1.x版本使用http进行通信、2.x版本做了重构改为使用grpc进行内部节点以及对外通信，目前为beta版。</p>
+<p>
+        <img class="mx-auto" alt="" src="nacos.png" />   
+    </p>
 
         </div>
 
@@ -257,7 +210,7 @@
 <div class="post-archive">
     <ul class="post-copyright">
         <li><strong>原文作者：</strong><a rel="author" href="https://leyou240.github.io/"></a></li>
-        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/">https://leyou240.github.io/post/juc03_java%E5%B9%B6%E5%8F%91_atomicxxx%E5%8E%9F%E7%90%86/</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/</a></li>
         <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
     </ul>
 </div>
@@ -271,15 +224,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/">并发源码| JMM与volatile</a></li>
+        <li><a href="/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/">nacos注册中心初始化</a></li>
         
-        <li><a href="/post/juc04_reentrantlock%E4%B8%8Eaqs/">并发源码|AQS、ReentratLock原理</a></li>
+        <li><a href="/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/">ArrayList和LinkedList集合源码</a></li>
         
-        <li><a href="/post/juc07_hashmap%E6%AD%BB%E5%BE%AA%E7%8E%AF%E4%BB%A5%E5%8F%8Aconcurrenthashmap/">并发源码|Hashmap死循环问题与ConcurrentHashmap</a></li>
+        <li><a href="/post/jdk_02_hashmap%E6%BA%90%E7%A0%81/">Hashmap源码</a></li>
         
-        <li><a href="/post/juc02_java%E5%B9%B6%E5%8F%91_synchronizedwait%E4%B8%8Enotify/">并发源码|synchronized、wait与notify</a></li>
+        <li><a href="/post/sc_eureka/">SpringCloud源码| eureka源码</a></li>
         
-        <li><a href="/post/juc08_%E5%85%B6%E4%BB%96%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/">并发源码|其他并发容器</a></li>
+        <li><a href="/post/sc_feign/">SpringCloud源码| feign源码</a></li>
         
     </ul>
 </div>
@@ -289,7 +242,7 @@
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/juc'>juc</a></li>
+                <li><a href='/tags/nacos'>nacos</a></li>
                 
             </ul>
             

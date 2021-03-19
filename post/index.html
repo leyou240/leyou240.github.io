@@ -75,6 +75,63 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/" title="客户端是如何进行服务发现的？">客户端是如何进行服务发现的？</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年12月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81'>spring cloud alibaba源码</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。图片原始地址https://xie.infoq.cn/article/d342a914b8754dd52f5709b43
+服务心跳、服务剔除 这些都与eureka类似。定时访问对应的接口即可
+与eureka不太一样的是，服务同步如果是ephemeral则异步更新，达到最终一致性 AP。如果是持久化的注册，则使用raft协议同步 CP。
+nacos1.x版本使用http进行通信、2.x版本做了重构改为使用grpc进行内部节点以及对外通信，目前为beta版。
+……
+        </div>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/" title="nacos注册中心初始化">nacos注册中心初始化</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年12月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81'>spring cloud alibaba源码</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            注册中心启动类就一个springboot应用，看不出什么东西
+@EnableScheduling @SpringBootApplication(scanBasePackages = {&#34;com.alibaba.nacos.naming&#34;, &#34;com.alibaba.nacos.core&#34;}) public class NamingApp { public static void main(String[] args) { SpringApplication.run(NamingApp.class, args); } } 通过官方文档已经一些分析，得知底层是用了raft协议来做集群同步
+//PersistentConsistencyServiceDelegateImpl private BasePersistentServiceProcessor createNewPersistentServiceProcessor(ProtocolManager protocolManager, ClusterVersionJudgement versionJudgement) throws Exception { //根据相关配置，判断到底是standlone还是raft模式  final BasePersistentServiceProcessor processor = EnvUtil.getStandaloneMode() ? new StandalonePersistentServiceProcessor(versionJudgement) : new PersistentServiceProcessor(protocolManager, versionJudgement); //调用基类的方法  processor.afterConstruct(); return processor; } 具体的代码逻辑
+//PersistentServiceProcessor @Override public void afterConstruct() { super.afterConstruct(); this.protocol.addRequestProcessors(Collections.singletonList(this)); //监听元数据的状态  this.protocol.protocolMetaData() .subscribe(Constants.NAMING_PERSISTENT_SERVICE_GROUP, MetadataKey.LEADER_META_DATA, (o, arg) -&gt; hasLeader = StringUtils.……
+        </div>
+        <p class="readmore"><a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="https://leyou240.github.io/post/juc09_%E7%BA%BF%E7%A8%8B%E6%B1%A0/" title="并发源码|线程池原理">并发源码|线程池原理</a>
             </h1>
         </header>
@@ -344,80 +401,6 @@ public class Singleton { private static volatile Singleton instance; private Sin
     
     
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2019年12月13日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1'>分布式事务</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            ACID与隔离级别 事务具有以下四种特征：
-  原子性（Atomicity）
-事务包含的所有操作要么全部成功，要么全部失败回滚。
-  一致性（Consistency）
-事务必须使数据库从一个一致性状态变换到另一个一致性状态，也就是说一个事务执行之前和执行之后都必须处于一致性状态。 拿转账来说，假设用户A和用户B两者的钱加起来一共是5000，那么不管A和B之间如何转账，转几次账，事务结束后两个用户的钱相加起来应该还得是5000，这就是事务的一致性。
-  隔离性（Isolation）
-不同事务并发执行操作相同数据时，每个事务都有各自完整的数据空间，即一个事务内所操作使用的数据与其他并发执行的各事务不互相干扰。
-  持久性（Durability）
-一个事务一旦提交，对数据库中数据状态变更应该是永久保存下来，即使发生系统崩溃或宕机，也一定能恢复到事务成功结束时的状态。
-  隔离级别
-   隔离级别 脏读 不可重复读 幻读     读未提交 存在 存在 存在   读已提交 不存在 存在 存在   可重复读 不存在 不存在 存在   串行化 不存在 不存在 不存在    下面用口语化对各个隔离级别进行解释。
-假设，数据库中有这样一个数据，id=1 name=张三
-读未提交 事务1中，将张三修改为李四，但未提交
-事务2中，就读到了id=1 name=李四
-此为读未提交，存在脏读
-读已提交 事务1中，将张三修改为李四
-事务2中，第一次读到了id=1 name=张三……
-        </div>
-        <p class="readmore"><a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leyou240.github.io/post/sc_zuul/" title="SpringCloud源码| zuul源码">SpringCloud源码| zuul源码</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2019年12月13日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='/categories/springcloud%E6%BA%90%E7%A0%81'>SpringCloud源码</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            zuul主要使用责任链设计模式
-其中有如下过滤器
-pre过滤器
- -3：ServletDetectionFilter -2：Servlet30WrapperFilter -1：FromBodyWrapperFilter 1：DebugFilter 5：PreDecorationFilter  routing过滤器
- 10：RibbonRoutingFilter 100：SimpleHostRoutingFilter 500：SendForwardFilter  post过滤器
- 0：SendErrorFilter 900：LocationRewriteFilter 1000：SendResponseFilter  @EnableZuulProxy为spring cloud中zuul的入口
-@EnableCircuitBreaker @Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Import(ZuulProxyMarkerConfiguration.class) public @interface EnableZuulProxy { } 然后在ZuulProxyAutoConfiguration进行相关类的注册
-经过断点调试，核心逻辑为此方法ZuulServlet#service
-@Override public void service(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse) throws ServletException, IOException { try { init((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse); // Marks this request as having passed through the &#34;Zuul engine&#34;, as opposed to servlets  // explicitly bound in web.……
-        </div>
-        <p class="readmore"><a href="https://leyou240.github.io/post/sc_zuul/">阅读全文</a></p>
-    </article>
-    
-    
-    
 
 
 
@@ -493,6 +476,14 @@ pre过滤器
 <ul class="widget-list">
     
     <li>
+        <a href="https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/" title="nacos注册中心初始化">nacos注册中心初始化</a>
+    </li>
+    
+    <li>
+        <a href="https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/" title="客户端是如何进行服务发现的？">客户端是如何进行服务发现的？</a>
+    </li>
+    
+    <li>
         <a href="https://leyou240.github.io/post/jdk_01_arraylist%E5%92%8Clinkedlist%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81/" title="ArrayList和LinkedList集合源码">ArrayList和LinkedList集合源码</a>
     </li>
     
@@ -522,14 +513,6 @@ pre过滤器
     
     <li>
         <a href="https://leyou240.github.io/post/sc_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="事务隔离级别，MVCC与国内主流分布式事务方案">事务隔离级别，MVCC与国内主流分布式事务方案</a>
-    </li>
-    
-    <li>
-        <a href="https://leyou240.github.io/post/juc01_java%E5%B9%B6%E5%8F%91_jmm%E4%B8%8Evolatile/" title="并发源码| JMM与volatile">并发源码| JMM与volatile</a>
-    </li>
-    
-    <li>
-        <a href="https://leyou240.github.io/post/juc04_reentrantlock%E4%B8%8Eaqs/" title="并发源码|AQS、ReentratLock原理">并发源码|AQS、ReentratLock原理</a>
     </li>
     
 </ul>
@@ -576,6 +559,8 @@ pre过滤器
     
     <li><a href="https://leyou240.github.io/categories/juc%E6%BA%90%E7%A0%81/">juc源码 (8)</a></li>
     
+    <li><a href="https://leyou240.github.io/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81/">spring cloud alibaba源码 (2)</a></li>
+    
     <li><a href="https://leyou240.github.io/categories/springcloud%E6%BA%90%E7%A0%81/">SpringCloud源码 (6)</a></li>
     
     <li><a href="https://leyou240.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 (1)</a></li>
@@ -590,6 +575,8 @@ pre过滤器
     <a href="https://leyou240.github.io/tags/jdk/">jdk</a>
     
     <a href="https://leyou240.github.io/tags/juc/">juc</a>
+    
+    <a href="https://leyou240.github.io/tags/nacos/">nacos</a>
     
     <a href="https://leyou240.github.io/tags/springcloud/">SpringCloud</a>
     
