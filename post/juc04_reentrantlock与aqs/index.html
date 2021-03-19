@@ -143,7 +143,6 @@
     <li><a href="#reentratlock">ReentratLock</a></li>
     <li><a href="#reentrantreadwritelock读写锁">ReentrantReadWriteLock读写锁</a></li>
     <li><a href="#condition">Condition</a></li>
-    <li><a href="#锁优化">锁优化</a></li>
   </ul>
 </nav>
     </div>
@@ -219,11 +218,11 @@
 </span><span style="color:#75715e">//公平锁：等待队列中的线程依次加锁，体现的“公平”的特点
 </span></code></pre></div><h2 id="reentratlock">ReentratLock</h2>
 <p>
-        <img class="mx-auto" alt="" src="../../static/05_AQS%e5%8e%9f%e7%90%86.jpg" />   
+        <img class="mx-auto" alt="" src="../05_AQS%e5%8e%9f%e7%90%86.jpg" />   
     </p>
 <p>多个线程争抢锁</p>
 <p>
-        <img class="mx-auto" alt="" src="../../static/06_%e5%a4%9a%e7%ba%bf%e7%a8%8b%e4%ba%89%e6%8a%a2ReentrantLock.jpg" />   
+        <img class="mx-auto" alt="" src="../06_%e5%a4%9a%e7%ba%bf%e7%a8%8b%e4%ba%89%e6%8a%a2ReentrantLock.jpg" />   
     </p>
 <p>尝试加锁，public boolean tryLock(long timeout, TimeUnit unit) 如果加锁不成功，则等待一段时间不成功则设置当前线程waitstate为SIGNAL状态，并持续重试，若最终超过了等待时间则从队列中移除</p>
 <h2 id="reentrantreadwritelock读写锁">ReentrantReadWriteLock读写锁</h2>
@@ -231,15 +230,13 @@
 <p>读锁，可以同时被多个线程同时持有。读请求可以并发起来</p>
 <p>写锁，则是互斥的</p>
 <p>
-        <img class="mx-auto" alt="" src="../../static/07_%e5%86%99%e9%94%81%e5%8e%9f%e7%90%86.jpg" />   
+        <img class="mx-auto" alt="" src="../07_%e5%86%99%e9%94%81%e5%8e%9f%e7%90%86.jpg" />   
     </p>
 <h2 id="condition">Condition</h2>
 <p>可重入锁可以创建Condition，主要有2个方法await与notify/notifyAll。 await等待唤醒，await与notify/notifyAll唤醒对应conditionawait的线程。</p>
 <p>Condition.await()原理：将自己加入condition等待队列、释放锁、挂起自己</p>
 <p>如果在加锁等待队列里有人阻塞，会有unpark的过程，唤醒加锁等待队列中的队头元素的那个过程</p>
 <p>signal唤醒的过程，大概的意思，就是把condition等待队列中的元素，转化为一个加锁等待队列中的元素</p>
-<h2 id="锁优化">锁优化</h2>
-<p>TODO：</p>
 
         </div>
 

@@ -48,8 +48,7 @@ ReentrantReadWriteLock读写锁 使用state的高低16位(因为int是32位)来�
 Condition 可重入锁可以创建Condition，主要有2个方法await与notify/notifyAll。 await等待唤醒，await与notify/notifyAll唤醒对应conditionawait的线程。
 Condition.await()原理：将自己加入condition等待队列、释放锁、挂起自己
 如果在加锁等待队列里有人阻塞，会有unpark的过程，唤醒加锁等待队列中的队头元素的那个过程
-signal唤醒的过程，大概的意思，就是把condition等待队列中的元素，转化为一个加锁等待队列中的元素
-锁优化 TODO：</description>
+signal唤醒的过程，大概的意思，就是把condition等待队列中的元素，转化为一个加锁等待队列中的元素</description>
     </item>
     
     <item>

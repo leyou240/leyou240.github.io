@@ -211,11 +211,11 @@
 <p>线程池：适合绝大多数的场景，99%的，线程池，对依赖服务的网络请求的调用和访问，timeout这种问题</p>
 <p>信号量：适合对内部的一些比较复杂的业务逻辑的访问，但是像这种访问，系统内部的代码，其实不涉及任何的网络请求，那么只要做信号量的普通限流就可以了，因为不需要去捕获timeout类似的问题。但算法+数据结构的效率不是太高，并发量突然太高，因为这里稍微耗时一些，导致很多线程卡在这里的话，不太好，所以进行一个基本的资源隔离和访问，避免内部复杂的低效率的代码，导致大量的线程被hang住</p>
 <p>
-        <img class="mx-auto" alt="feign与hystrix整合的核心原理" src="../../static/feign%e4%b8%8ehystrix%e6%95%b4%e5%90%88%e7%9a%84%e6%a0%b8%e5%bf%83%e5%8e%9f%e7%90%86.png" />   
+        <img class="mx-auto" alt="feign与hystrix整合的核心原理" src="../feign%e4%b8%8ehystrix%e6%95%b4%e5%90%88%e7%9a%84%e6%a0%b8%e5%bf%83%e5%8e%9f%e7%90%86.png" />   
     </p>
 <p>feign集成hystrix以后，HystrixFeign.Builder则被替换为HystrixFeign.Builder。以支持hystrix相关组件</p>
 <p>
-        <img class="mx-auto" alt="" src="../../static/%e5%90%af%e7%94%a8hystrix%e4%b9%8b%e5%90%8e%e7%94%9f%e6%88%90feign%e5%8a%a8%e6%80%81%e4%bb%a3%e7%90%86%e7%9a%84%e8%bf%87%e7%a8%8b.png" />   
+        <img class="mx-auto" alt="" src="../%e5%90%af%e7%94%a8hystrix%e4%b9%8b%e5%90%8e%e7%94%9f%e6%88%90feign%e5%8a%a8%e6%80%81%e4%bb%a3%e7%90%86%e7%9a%84%e8%bf%87%e7%a8%8b.png" />   
     </p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">//ReflectiveFeign 类中
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">newInstance</span><span style="color:#f92672">(</span>Target<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>

@@ -336,7 +336,7 @@
 <p>(1)创建PeerAwareInstanceRegistry内部比较重要的是MeasuredRate，其lastBucket统计上一分钟的心跳，currentBucket统计当前一分钟心跳。此组件用做eureka保护模式的重要判断依据</p>
 <p>(2)构造peer节点同步组件，用以集群同步</p>
 <p>(3)DefaultEurekaServerContext创建，并且启动服务注册，从相邻节点同步，注册监控统计项</p>
-<p>![](../../static/eureka server启动的流程图.png)</p>
+<p>![](../eureka server启动的流程图.png)</p>
 <p>再从eureka的example中例子</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExampleEurekaClient</span> <span style="color:#f92672">{</span>
 
@@ -475,7 +475,7 @@
 <h2 id="服务注册信息的获取接口applicationsresourcegetcontainers">服务注册信息的获取接口ApplicationsResource#getContainers</h2>
 <p>其使用了多级缓存以提高并发性能</p>
 <p>
-        <img class="mx-auto" alt="" src="../../static/eureka-server%e7%9a%84%e5%a4%9a%e7%ba%a7%e7%bc%93%e5%ad%98%e8%bf%87%e6%9c%9f%e6%9c%ba%e5%88%b6.png" />   
+        <img class="mx-auto" alt="" src="../eureka-server%e7%9a%84%e5%a4%9a%e7%ba%a7%e7%bc%93%e5%ad%98%e8%bf%87%e6%9c%9f%e6%9c%ba%e5%88%b6.png" />   
     </p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ResponseCacheImpl<span style="color:#f92672">(</span>EurekaServerConfig serverConfig<span style="color:#f92672">,</span> ServerCodecs serverCodecs<span style="color:#f92672">,</span> AbstractInstanceRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">serverConfig</span> <span style="color:#f92672">=</span> serverConfig<span style="color:#f92672">;</span>
@@ -754,7 +754,7 @@
 </span><span style="color:#75715e"></span>                logger<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Discovery WorkerThread error&#34;</span><span style="color:#f92672">,</span> e<span style="color:#f92672">);</span>
             <span style="color:#f92672">}</span>
         <span style="color:#f92672">}</span>
-</code></pre></div><p>![](../../static/eureka server同步任务批处理机制.png)</p>
+</code></pre></div><p>![](../eureka server同步任务批处理机制.png)</p>
 <h3 id="spring-cloud-eureka-server注解式启动">spring-cloud-eureka-server注解式启动</h3>
 <p>@EnableEurekaServer注解，springboot启动以后，将eureka server启动起来。</p>
 <p>EurekaServerAutoConfiguration使用spring boot的auto configuration机制，触发EurekaServerAutoConfiguration的执行。将eureka server需要的类，统统交由spring bean来进行注入</p>
