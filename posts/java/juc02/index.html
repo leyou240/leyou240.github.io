@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等">
 <title>并发源码|synchronized、wait与notify</title>
 
 <link rel='canonical' href='http://localhost:1313/posts/java/juc02/'>
 
 <link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="并发源码|Atomicxxx原理">
-<meta property='og:description' content="synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m">
+<meta property='og:description' content="AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等">
 <meta property='og:url' content='http://localhost:1313/posts/java/juc02/'>
 <meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='juc' /><meta property='article:published_time' content='2014-03-08T21:00:00&#43;08:00'/><meta property='article:modified_time' content='2014-03-08T21:00:00&#43;08:00'/>
 <meta name="twitter:title" content="并发源码|Atomicxxx原理">
-<meta name="twitter:description" content="synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m">
+<meta name="twitter:description" content="AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等">
   
 
 
@@ -259,7 +259,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/posts/java/juc02/">并发源码|synchronized、wait与notify</a>
+            <a href="/posts/java/juc02/">并发源码|Atomicxxx原理</a>
         </h2>
     
         
@@ -281,7 +281,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Mar 08, 2014</time>
+                <time class="article-time--published">Mar 11, 2014</time>
             </div>
         
 
@@ -296,7 +296,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 2 分钟
+                    阅读时长: 3 分钟
                 </time>
             </div>
         
