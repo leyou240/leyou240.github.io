@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Fj on 专注于Java、Golang、软件架构、项目管理</title>
+        <link>http://localhost:1313/categories/fj/</link>
+        <description>Recent content in Fj on 专注于Java、Golang、软件架构、项目管理</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Mon, 12 Aug 2024 13:41:49 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/fj/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Jdk1</title>
+        <link>http://localhost:1313/posts/java/jdk1/</link>
+        <pubDate>Mon, 12 Aug 2024 13:41:49 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/java/jdk1/</guid>
+        <description>2022年初，上海突然的疫情打断了原来的生活节奏，让这个中国最大的城市之一突然停顿了下来。本来这篇blog是在三月份疫情刚刚开始定的题目，当</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>nacos on </title>
-    <link>https://leyou240.github.io/tags/nacos/</link>
-    <description>Recent content in nacos on </description>
-    <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 13 Dec 2020 22:00:00 +0800</lastBuildDate><atom:link href="https://leyou240.github.io/tags/nacos/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>nacos客户端是如何进行服务发现的？</title>
-      <link>https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/</link>
-      <pubDate>Sun, 13 Dec 2020 22:00:00 +0800</pubDate>
-      
-      <guid>https://leyou240.github.io/post/sca_02_%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E7%9A%84/</guid>
-      <description>本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。
-https://xie.infoq.cn/article/d342a914b8754dd52f5709b43
-服务心跳、服务剔除 这些都与eureka类似。定时访问对应的接口即可
-与eureka不太一样的是，服务同步如果是ephemeral则异步更新，达到最终一致性 AP。如果是持久化的注册，则使用raft协议同步 CP。
-nacos1.x版本使用http进行通信、2.x版本做了重构改为使用grpc进行内部节点以及对外通信，目前为beta版。</description>
-    </item>
-    
-    <item>
-      <title>nacos注册中心初始化</title>
-      <link>https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/</link>
-      <pubDate>Sun, 13 Dec 2020 21:00:00 +0800</pubDate>
-      
-      <guid>https://leyou240.github.io/post/sca_01_nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96/</guid>
-      <description>注册中心启动类就一个springboot应用，看不出什么东西
-@EnableScheduling @SpringBootApplication(scanBasePackages = {&amp;#34;com.alibaba.nacos.naming&amp;#34;, &amp;#34;com.alibaba.nacos.core&amp;#34;}) public class NamingApp { public static void main(String[] args) { SpringApplication.run(NamingApp.class, args); } } 通过官方文档已经一些分析，得知底层是用了raft协议来做集群同步
-//PersistentConsistencyServiceDelegateImpl private BasePersistentServiceProcessor createNewPersistentServiceProcessor(ProtocolManager protocolManager, ClusterVersionJudgement versionJudgement) throws Exception { //根据相关配置，判断到底是standlone还是raft模式  final BasePersistentServiceProcessor processor = EnvUtil.getStandaloneMode() ? new StandalonePersistentServiceProcessor(versionJudgement) : new PersistentServiceProcessor(protocolManager, versionJudgement); //调用基类的方法  processor.afterConstruct(); return processor; } 具体的代码逻辑
-//PersistentServiceProcessor @Override public void afterConstruct() { super.afterConstruct(); this.protocol.addRequestProcessors(Collections.singletonList(this)); //监听元数据的状态  this.protocol.protocolMetaData() .subscribe(Constants.NAMING_PERSISTENT_SERVICE_GROUP, MetadataKey.LEADER_META_DATA, (o, arg) -&amp;gt; hasLeader = StringUtils.</description>
-    </item>
-    
-  </channel>
+    <channel>
+        <title>Nacos on 专注于Java、Golang、软件架构、项目管理</title>
+        <link>http://localhost:1313/tags/nacos/</link>
+        <description>Recent content in Nacos on 专注于Java、Golang、软件架构、项目管理</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Tue, 02 Jun 2020 22:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/nacos/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>nacos客户端是如何进行服务发现的？</title>
+        <link>http://localhost:1313/posts/java/sca02/</link>
+        <pubDate>Tue, 02 Jun 2020 22:00:00 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/java/sca02/</guid>
+        <description>本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。 https://xie.infoq.cn/article/d342a914b8754dd52f5709b43 服务心跳、服务剔除 这些都与eur</description>
+        </item>
+        <item>
+        <title>nacos注册中心初始化</title>
+        <link>http://localhost:1313/posts/java/sca01/</link>
+        <pubDate>Mon, 01 Jun 2020 21:00:00 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/java/sca01/</guid>
+        <description>注册中心启动类就一个springboot应用，看不出什么东西 1 2 3 4 5 6 7 8 @EnableScheduling @SpringBootApplication(scanBasePackages = {&amp;#34;com.alibaba.nacos.naming&amp;#34;, &amp;#34;com.alibaba.nacos.core&amp;#34;}) public class NamingApp { public static void main(String[] args) { SpringApplication.run(NamingApp.class, args); } } 通过官方文档已经一些分析，</description>
+        </item>
+        
+    </channel>
 </rss>
