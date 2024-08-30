@@ -8,10 +8,10 @@
         <language>zh-cn</language>
         <lastBuildDate>Tue, 12 Sep 2023 12:22:44 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/springboot3/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>升级到springboot3与jdk21需要做的工作</title>
-        <link>http://localhost:1313/posts/springboot3jdk21/</link>
+        <link>http://localhost:1313/posts/java/springboot3jdk21/</link>
         <pubDate>Tue, 12 Sep 2023 12:22:44 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/springboot3jdk21/</guid>
+        <guid>http://localhost:1313/posts/java/springboot3jdk21/</guid>
         <description>随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk</description>
         </item>
         
