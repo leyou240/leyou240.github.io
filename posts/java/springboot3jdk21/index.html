@@ -233,6 +233,7 @@
     <li><a href="#升级步骤">升级步骤</a></li>
     <li><a href="#升级后所有生产环境jvm配置统一修改">升级后，所有生产环境jvm配置统一修改</a></li>
     <li><a href="#总结">总结</a></li>
+    <li><a href="#更新">更新</a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -354,13 +355,16 @@
 </h2><p>以下是用得最多的4c8g配置</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">-Xmx6g -Xms6g <span class="c1">#堆内存初始化6g</span>
@@ -370,6 +374,9 @@
 </span></span><span class="line"><span class="cl">-XX:+AlwaysPreTouch <span class="c1">#启用内存预分配</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#gc日志记录到/opt/logs/文件名为启动的时间戳，每个日志记录包含时间戳、日志级别、线程id、标签。文件大小限制到50M，达到后创建新的文件继续记录</span>
 </span></span><span class="line"><span class="cl">-Xlog:gc*<span class="o">=</span>info:file<span class="o">=</span>/opt/logs/gc-%t.log:time,level,tid,tags:filesize<span class="o">=</span>50M  
+</span></span><span class="line"><span class="cl"><span class="c1">#发生OOM时dump内存日志</span>
+</span></span><span class="line"><span class="cl">-XX:+HeapDumpOnOutOfMemoryError
+</span></span><span class="line"><span class="cl">-XX:HeapDumpPath<span class="o">=</span>/opt/apps/errorDump.hprof
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>因为目前公司的java服务均跑在容器内部，Huge Pages、NUMA Support等未做开启</p>
@@ -377,7 +384,9 @@
 </h2><p>本文探讨了如何升级到jdk21，并使用最新的分代zgc。jdk21也带来了很多简便的新语法和适合IO密集的虚拟线程。虚拟线程相比于平台线程在某些场景下优势明显。只是需要注意仅使用可重入锁对象，而不使用synchronize关键字（反而降低性能）。相关资料：https://openjdk.org/jeps/444</p>
 <p>经过实践和测试，我们发现升级后的系统在垃圾回收方面表现出色，暂停时间确实如官方所说被控制到了亚毫秒内。尽管这个优化会额外消耗cpu资源，但获得了超低stw时间，权衡这下显然非常值得。</p>
 <p>相比其他已经经过生产环境调优的垃圾回收器（G1、Parallel、CMS），ZGC的性能和稳定性都非常优秀，几乎不需要太多额外的调优，就可以得到响应时间的降低和吞吐量的增加。即使在以前吞吐量有优势的Parallel，依然具有优势。</p>
-<p>ZGC可以统一江湖了！另据得到的消息，某团、某里、某付宝、某东、某程等（消息未在公开渠道公布）用java的大厂主要服务均升级到了jdk21。但也进一步说明了，zgc和虚拟线程的强大。你们还在用jdk8吗？</p>
+<p>ZGC可以统一江湖了！另据得到的消息，某些大厂主要服务均升级到了jdk21。但也进一步说明了，（分代）zgc和虚拟线程的强大。你们还在用jdk8吗？</p>
+<h2 id="更新">更新
+</h2><p>新增一些中大厂使用jdk17/jdk21和zgc的案例，作为以后项目的参考</p>
 <h2 id="references">References
 </h2>
 </section>

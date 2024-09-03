@@ -6,7 +6,15 @@
         <description>Recent content in Springboot3 on 专注于Java、Golang、软件架构、项目管理</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Tue, 12 Sep 2023 12:22:44 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/springboot3/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 12 Dec 2023 12:22:44 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/springboot3/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>java使用虚拟线程遇到的问题</title>
+        <link>http://localhost:1313/posts/java/virtualthreads/</link>
+        <pubDate>Tue, 12 Dec 2023 12:22:44 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/java/virtualthreads/</guid>
+        <description>虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以</description>
+        </item>
+        <item>
         <title>升级到springboot3与jdk21需要做的工作</title>
         <link>http://localhost:1313/posts/java/springboot3jdk21/</link>
         <pubDate>Tue, 12 Sep 2023 12:22:44 +0800</pubDate>

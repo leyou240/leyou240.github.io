@@ -23,10 +23,19 @@
     <loc>http://localhost:1313/</loc>
     <lastmod>2024-05-24T17:58:43+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/jdk21/</loc>
-    <lastmod>2023-09-12T12:22:44+08:00</lastmod>
+    <loc>http://localhost:1313/posts/java/virtualthreads/</loc>
+    <lastmod>2023-12-12T12:22:44+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/jdk21/</loc>
+    <lastmod>2023-12-12T12:22:44+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/springboot3/</loc>
+    <lastmod>2023-12-12T12:22:44+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/virtualthreads/</loc>
+    <lastmod>2023-12-12T12:22:44+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/jdk21/</loc>
     <lastmod>2023-09-12T12:22:44+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/java/springboot3jdk21/</loc>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Jdk21 on 专注于Java、Golang、软件架构、项目管理</title>
+        <link>http://localhost:1313/categories/jdk21/</link>
+        <description>Recent content in Jdk21 on 专注于Java、Golang、软件架构、项目管理</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Tue, 12 Dec 2023 12:22:44 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/jdk21/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>java使用虚拟线程遇到的问题</title>
+        <link>http://localhost:1313/posts/java/virtualthreads/</link>
+        <pubDate>Tue, 12 Dec 2023 12:22:44 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/java/virtualthreads/</guid>
+        <description>虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以</description>
+        </item>
+        
+    </channel>
+</rss>
