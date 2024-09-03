@@ -531,8 +531,21 @@
 </h2><p>1、强制使用**<code>ReentrantLock</code>**：虚拟线程可以更好的利用cpu，支持了java版本的协程。但在当前版本无法和*<code>synchronized</code>*关键字很好的适配。在项目中如果需要线程同步的场景，</p>
 <p>2、统一使用虚拟线程：在大多数场景可以抛弃掉原有的各种线程池，由jvm为我们做调度。再也不怕因线程太多而导致oom了</p>
 <p>3、在会调用到native方法和jni的地方：不应使用虚拟线程</p>
+<p>4、虚拟线程仅适用于</p>
 <h2 id="references">References
-</h2>
+</h2><p><a class="link" href="https://mikemybytes.com/2024/02/28/curiosities-of-java-virtual-threads-pinning-with-synchronized/"  target="_blank" rel="noopener"
+    >虚拟线程与synchronized</a></p>
+<p><a class="link" href="https://openjdk.org/jeps/444"  target="_blank" rel="noopener"
+    >虚拟线程</a></p>
+<p><a class="link" href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes"  target="_blank" rel="noopener"
+    >SpringBoot3.2</a></p>
+<p><a class="link" href="https://github.com/mybatis/mybatis-3/releases/tag/mybatis-3.5.16"  target="_blank" rel="noopener"
+    >mybatis-3.5.16</a></p>
+<p><a class="link" href="https://github.com/mysql/mysql-connector-j/commit/00d43c5e8b24f1d516f93eea900b3487c15a489c"  target="_blank" rel="noopener"
+    >Replace synchronized with ReentrantLock</a></p>
+<p><a class="link" href="https://github.com/brettwooldridge/HikariCP/issues/2151"  target="_blank" rel="noopener"
+    >hikari</a></p>
+
 </section>
 
 

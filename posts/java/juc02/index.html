@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等">
-<title>并发源码|synchronized、wait与notify</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m">
+<title>并发源码|Atomicxxx原理</title>
 
 <link rel='canonical' href='http://localhost:1313/posts/java/juc02/'>
 
-<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="并发源码|Atomicxxx原理">
-<meta property='og:description' content="AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等">
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="并发源码|synchronized、wait与notify">
+<meta property='og:description' content="synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m">
 <meta property='og:url' content='http://localhost:1313/posts/java/juc02/'>
 <meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
-<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='juc' /><meta property='article:published_time' content='2014-03-08T21:00:00&#43;08:00'/><meta property='article:modified_time' content='2014-03-08T21:00:00&#43;08:00'/>
-<meta name="twitter:title" content="并发源码|Atomicxxx原理">
-<meta name="twitter:description" content="AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等">
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='juc' /><meta property='article:published_time' content='2014-03-11T21:00:00&#43;08:00'/><meta property='article:modified_time' content='2014-03-11T21:00:00&#43;08:00'/>
+<meta name="twitter:title" content="并发源码|synchronized、wait与notify">
+<meta name="twitter:description" content="synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m">
   
 
 
@@ -230,8 +230,8 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#synchronized的底层原理">synchronized的底层原理</a></li>
-    <li><a href="#wait与sleep的区别">wait与sleep的区别</a></li>
+    <li><a href="#atomicxxx原子类底层的一些原理">AtomicXxx原子类底层的一些原理</a></li>
+    <li><a href="#cas的问题">CAS的问题</a></li>
   </ul>
 </nav>
         </div>
@@ -311,11 +311,49 @@
     <section class="article-content">
     
     
-    <h2 id="synchronized的底层原理">synchronized的底层原理
-</h2><p>跟jvm及monitor有关。</p>
-<p>如果用到了synchronized关键字，在底层编译后的jvm指令中，会有monitorenter和monitorexit两个指令</p>
-<p>每个对象都是有个关联的monitor对象，即对象的Mark Word。里面有个计数器i，一个线程获取到锁以后i++，并且将锁对象设置为当前线程。释放锁时候i&ndash;，若i为0 表示完全释放锁，将monitor的锁对象设为null</p>
-<p>这个monitor的锁是支持重入加锁的，什么意思呢，好比下面的代码片段</p>
+    <h2 id="atomicxxx原子类底层的一些原理">AtomicXxx原子类底层的一些原理
+</h2><p>AtomicLong、AtomicBoolean、AtomicReference、LongAdder等</p>
+<p>都是无锁化或者叫乐观锁，判断此时此刻是否是某个值，如果是则修改，不是则重新查询一个最新的值，再次执行判断。这个操作叫CAS，compare and set(swap jdk8及以后)</p>
+<p>Atomic原子类底层核心的原理就是CAS，无锁化，乐观锁，每次尝试修改的时候，就对比一下，有没有人修改过这个值，没有人修改，自己就修改，如果有人修改过，就重新查出来最新的值，再次重复那个过程</p>
+<p>源码：</p>
+<p>（1）变量的offset，volatile value 使其值对其他线程可见</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w"> </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">valueOffset</span><span class="p">;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">valueOffset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unsafe</span><span class="p">.</span><span class="na">objectFieldOffset</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">(</span><span class="n">AtomicInteger</span><span class="p">.</span><span class="na">class</span><span class="p">.</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;value&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="n">ex</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>（2）Unsafe：核心类，负责执行CAS操作</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -324,40 +362,38 @@
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
+</span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">synchronized</span><span class="p">(</span><span class="n">myObject</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 一大堆的代码</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">synchronized</span><span class="p">(</span><span class="n">myObject</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 一大堆的代码</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">getAndAddInt</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getIntVolatile</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">compareAndSwapInt</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>如果一个线程第一次synchronized那里，获取到了myObject对象的monitor的锁，计数器加1，然后第二次synchronized那里，会再次获取myObject对象的monitor的锁，这个就是重入加锁了，然后计数器会再次加1，变成2</p>
-<p>这个时候，其他的线程在第一次synchronized那里，会发现说myObject对象的monitor锁的计数器是大于0的，意味着被别人加锁了，然后此时线程就会进入block阻塞状态，什么都干不了，就是等着获取锁</p>
-<p>接着如果出了synchronized修饰的代码片段的范围，就会有一个monitorexit的指令，在底层。此时获取锁的线程就会对那个对象的monitor的计数器减1，如果有多次重入加锁就会对应多次减1，直到最后，计数器是0</p>
-<p>然后后面block住阻塞的线程，会再次尝试获取锁，但是只有一个线程可以获取到锁</p>
-<p>block以后，将block的线程加入wait set等待其他线程完成执行</p>
-<p><img src="/posts/java/juc02/04_synchronized%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86.jpg"
-	width="821"
-	height="503"
-	srcset="/posts/java/juc02/04_synchronized%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86_hu15432478981162229245.jpg 480w, /posts/java/juc02/04_synchronized%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86_hu4709037847932159113.jpg 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="163"
-		data-flex-basis="391px"
-	
-></p>
-<h2 id="wait与sleep的区别">wait与sleep的区别
-</h2><p>前者释放锁，后者不释放锁</p>
-<p>wait()，必须是有人notify唤醒他</p>
-<p>wait(timeout)，阻塞一段时间，然后自己唤醒，继续争抢锁</p>
-<p>wait与notify，必须在synchronized代码块中使用，因为必须是拥有monitor lock的线程才可以执行wait与notify操作</p>
-<p>因此wait与notify，必须与synchornized一起，对同一个对象进行使用，这样他们对应的monitor才是一样的</p>
-<p>notify()与notifyall()：前者就唤醒block状态的一个线程，后者唤醒block状态的所有线程</p>
+</div><p>（3）API接口：Atomic原子类的各种使用方式</p>
+<p>最底层使用c代码，发送cpu指令，确保CAS操作绝对原子(通过指令来锁掉某一小块内存，并且保证只有一个线程在同一时间可以对此块内存数据做CAS操作)。</p>
+<h2 id="cas的问题">CAS的问题
+</h2><ol>
+<li>
+<p>ABA问题</p>
+<p>如果某个值一开始是A，后来变成了B，然后又变成了A，你本来期望的是值如果是第一个A才会设置新值，结果第二个A一比较也ok，也设置了新值，跟期望是不符合的。所以atomic包里有AtomicStampedReference类，就是会比较两个值的引用是否一致，如果一致，才会设置新值</p>
+</li>
+<li>
+<p>无限循环(自旋)</p>
+<p>大家看源码就知道Atomic类设置值的时候会进入一个无限循环，只要不成功，就不停循环再次尝试，这个在高并发修改一个值的时候其实挺常见的，比如你用AtomicInteger在内存里搞一个原子变量，然后高并发下，多线程频繁修改，其实可能会导致这个compareAndSet()里要循环N次才设置成功，所以还是要考虑到的。JDK 1.8引入的LongAdder来解决，是一个重点，分段CAS思路</p>
+<p>LongAdder</p>
+<p>大量线程并发更新一个原子类的时候，天然的一个问题就是自旋，会导致并发性能还是有待提升，比synchronized当然好很多了</p>
+<p>分段迁移，某一个线程如果对一个Cell更新的时候，发现说出现了很难更新他的值，出现了多次自旋的一个问题，如果他CAS失败了，自动迁移段，他会去尝试更新别的Cell的值，这样的话就可以让一个线程不会盲目的等待一个cell的值</p>
+</li>
+<li>
+<p>多原子变量问题</p>
+<p>AtomicXXX类，只能保证一个变量的原子性，但是如果多个变量呢？你可以用AtomicReference，这个是封装自定义对象的，多个变量可以放一个自定义对象里，然后他会检查这个对象的引用是不是一个。</p>
+</li>
+</ol>
 
 </section>
 
