@@ -12,7 +12,8 @@
         <pubDate>Fri, 13 Jun 2014 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc08/</guid>
-        <description>线程池 线程池的意义：频繁的创建和销毁线程，性能开销比较大。线程池创建一些线程，执行完任务后不立即销毁，可以等待去执行下一个任务 线程池相关参数</description>
+        <description>&lt;h2 id=&#34;线程池&#34;&gt;线程池
+&lt;/h2&gt;&lt;p&gt;线程池的意义：频繁的创建和销毁线程，性能开销比较大。线程池创建一些线程，执行完任务后不立即销毁，可以等待去执行下一个任务&lt;/p&gt;</description>
         </item>
         <item>
         <title>并发源码|其他并发容器</title>
@@ -20,7 +21,10 @@
         <pubDate>Sun, 27 Apr 2014 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc07/</guid>
-        <description>CopyOnWriteArrayList 写时复制的并发Arraylist容器，底层使用锁来实现 底层使用volatile标记array，保证并发修改后能立即可见。 另外使用Reent</description>
+        <description>&lt;h2 id=&#34;copyonwritearraylist&#34;&gt;CopyOnWriteArrayList
+&lt;/h2&gt;&lt;p&gt;写时复制的并发Arraylist容器，底层使用锁来实现&lt;/p&gt;
+&lt;p&gt;底层使用volatile标记array，保证并发修改后能立即可见。&lt;/p&gt;
+&lt;p&gt;另外使用ReentrantLock在进行写操作时加锁&lt;/p&gt;</description>
         </item>
         <item>
         <title>并发源码|Hashmap死循环问题与ConcurrentHashmap</title>
@@ -28,7 +32,8 @@
         <pubDate>Fri, 18 Apr 2014 11:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc06/</guid>
-        <description>jdk7hashmap死循环问题 在多线程并发环境下。不应该用此容器，而应使用线程安全的容器如ConcurrentHashmap 其死循环主要是</description>
+        <description>&lt;h2 id=&#34;jdk7hashmap死循环问题&#34;&gt;jdk7hashmap死循环问题
+&lt;/h2&gt;&lt;p&gt;在多线程并发环境下。不应该用此容器，而应使用线程安全的容器如ConcurrentHashmap&lt;/p&gt;</description>
         </item>
         <item>
         <title>并发源码|并发常用组件</title>
@@ -36,7 +41,8 @@
         <pubDate>Fri, 11 Apr 2014 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc05/</guid>
-        <description>CountDownLatch：同步等待多个线程完成任务的并发组件 CyclicBarrier：将工作任务给多线程分而治之的并发组件，此组件比C</description>
+        <description>&lt;p&gt;CountDownLatch：同步等待多个线程完成任务的并发组件&lt;/p&gt;
+&lt;p&gt;CyclicBarrier：将工作任务给多线程分而治之的并发组件，此组件比CountDownLatch可重复使用&lt;/p&gt;</description>
         </item>
         <item>
         <title>并发源码|AQS、ReentratLock原理</title>
@@ -44,7 +50,35 @@
         <pubDate>Wed, 19 Mar 2014 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc04/</guid>
-        <description>AQS原理 底层使用如下组件 1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时sta</description>
+        <description>&lt;h2 id=&#34;aqs原理&#34;&gt;AQS原理
+&lt;/h2&gt;&lt;p&gt;底层使用如下组件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;private&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;volatile&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时state递减，若state=0时将owner设置为null，并且使用LockSupport.unpark(s.thread);方法唤醒等待队列中的第一个线程&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//其他线程来获取锁时，若失败，则加入等待队列(双向链表)，并且使用LockSupport.park(this);休眠此线程&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;private&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;transient&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Thread&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exclusiveOwnerThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//标识当前线程所有者&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//一个双向链表作为一个队列来使用，存放等待队列(保存待加锁的线程)。&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//非公平锁：新来一个线程直接判断能不能加锁，若能加锁则直接加锁，不能加锁才放入等待队列&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//公平锁：等待队列中的线程依次加锁，体现的“公平”的特点&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pr</description>
         </item>
         <item>
         <title>并发源码|Atomicxxx原理</title>
@@ -52,7 +86,8 @@
         <pubDate>Tue, 11 Mar 2014 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc02/</guid>
-        <description>AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等</description>
+        <description>&lt;h2 id=&#34;atomicxxx原子类底层的一些原理&#34;&gt;AtomicXxx原子类底层的一些原理
+&lt;/h2&gt;&lt;p&gt;AtomicLong、AtomicBoolean、AtomicReference、LongAdder等&lt;/p&gt;</description>
         </item>
         <item>
         <title>并发源码|synchronized、wait与notify</title>
@@ -60,7 +95,9 @@
         <pubDate>Sat, 08 Mar 2014 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc02/</guid>
-        <description>synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m</description>
+        <description>&lt;h2 id=&#34;synchronized的底层原理&#34;&gt;synchronized的底层原理
+&lt;/h2&gt;&lt;p&gt;跟jvm及monitor有关。&lt;/p&gt;
+&lt;p&gt;如果用到了synchronized关键字，在底层编译后的jvm指令中，会有monitorenter和monitorexit两个指令&lt;/p&gt;</description>
         </item>
         <item>
         <title>并发源码| JMM与volatile</title>
@@ -68,7 +105,20 @@
         <pubDate>Sat, 01 Mar 2014 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/juc/juc01/</guid>
-        <description>主内存的数据会被加载到cpu本地缓存里去，cpu后面会读写自己的缓存 缓存模型下的并发问题 java内存模型 read（从主存读取），load（将</description>
+        <description>&lt;p&gt;主内存的数据会被加载到cpu本地缓存里去，cpu后面会读写自己的缓存&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://localhost:1313/posts/java/juc/juc01/02_cpu%E7%BC%93%E5%AD%98%E6%A8%A1%E5%9E%8B.png&#34;
+	width=&#34;692&#34;
+	height=&#34;484&#34;
+	srcset=&#34;http://localhost:1313/posts/java/juc/juc01/02_cpu%E7%BC%93%E5%AD%98%E6%A8%A1%E5%9E%8B_hu14727855551246196521.png 480w, http://localhost:1313/posts/java/juc/juc01/02_cpu%E7%BC%93%E5%AD%98%E6%A8%A1%E5%9E%8B_hu7191765926765202319.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;142&#34;
+		data-flex-basis=&#34;343px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;缓存模型下的并发问题&lt;/p&gt;</description>
         </item>
         
     </channel>

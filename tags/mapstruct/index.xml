@@ -12,7 +12,7 @@
         <pubDate>Tue, 14 Jun 2022 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/project/project02/project02/</guid>
-        <description>在java开发中，对象之间的转换是一项常见的任务。通常有2种做法：手写和使用JavaBeanUtils。前者降低工作效率还容易出错，而后者因</description>
+        <description>&lt;p&gt;在java开发中，对象之间的转换是一项常见的任务。通常有2种做法：手写和使用&lt;code&gt;JavaBeanUtils&lt;/code&gt;。前者降低工作效率还容易出错，而后者因为使用了反射又会导致性能下降。为了解决这个问题，java社区出现了&lt;code&gt;Mapstruct&lt;/code&gt;框架。它是一个强大的代码生成器，在编译时生成代码，使对象间的映射变得简单、高效和高性能，降低了维护成本。&lt;/p&gt;</description>
         </item>
         
     </channel>

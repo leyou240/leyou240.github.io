@@ -12,7 +12,8 @@
         <pubDate>Tue, 12 Dec 2023 12:22:44 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/virtualthreads/</guid>
-        <description>虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以</description>
+        <description>&lt;h2 id=&#34;虚拟线程&#34;&gt;虚拟线程
+&lt;/h2&gt;&lt;p&gt;虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以远大于操作系统线程的数量。它们可以更有效地运行以thread-per-request（每个请求一个线程，就大大降低了线程上下文的切换）的方式编写的服务器应用程序，从而实现更高的吞吐量和更少的硬件浪费。&lt;/p&gt;</description>
         </item>
         
     </channel>

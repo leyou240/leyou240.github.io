@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="ACID与隔离级别 事务具有以下四种特征： 原子性（Atomicity） 事务包含的所有操作要么全部成功，要么全部失败回滚。 一致性（Consist">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="ACID与隔离级别 事务具有以下四种特征：\n原子性（Atomicity）\n事务包含的所有操作要么全部成功，要么全部失败回滚。\n">
 <title>事务隔离级别，MVCC与国内主流分布式事务方案</title>
 
 <link rel='canonical' href='http://localhost:1313/posts/java/springcloud/sc07/'>
 
 <link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="事务隔离级别，MVCC与国内主流分布式事务方案">
-<meta property='og:description' content="ACID与隔离级别 事务具有以下四种特征： 原子性（Atomicity） 事务包含的所有操作要么全部成功，要么全部失败回滚。 一致性（Consist">
+<meta property='og:description' content="ACID与隔离级别 事务具有以下四种特征：\n原子性（Atomicity）\n事务包含的所有操作要么全部成功，要么全部失败回滚。\n">
 <meta property='og:url' content='http://localhost:1313/posts/java/springcloud/sc07/'>
 <meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='tcc' /><meta property='article:published_time' content='2015-06-11T21:00:00&#43;08:00'/><meta property='article:modified_time' content='2015-06-11T21:00:00&#43;08:00'/>
 <meta name="twitter:title" content="事务隔离级别，MVCC与国内主流分布式事务方案">
-<meta name="twitter:description" content="ACID与隔离级别 事务具有以下四种特征： 原子性（Atomicity） 事务包含的所有操作要么全部成功，要么全部失败回滚。 一致性（Consist">
-  
-
-
+<meta name="twitter:description" content="ACID与隔离级别 事务具有以下四种特征：\n原子性（Atomicity）\n事务包含的所有操作要么全部成功，要么全部失败回滚。\n">
     </head>
     <body class="
     article-page
@@ -343,40 +340,40 @@
 </ul>
 <p>隔离级别</p>
 <div class="table-wrapper"><table>
-<thead>
-<tr>
-<th>隔离级别</th>
-<th>脏读</th>
-<th>不可重复读</th>
-<th>幻读</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>读未提交</td>
-<td>存在</td>
-<td>存在</td>
-<td>存在</td>
-</tr>
-<tr>
-<td>读已提交</td>
-<td>不存在</td>
-<td>存在</td>
-<td>存在</td>
-</tr>
-<tr>
-<td>可重复读</td>
-<td>不存在</td>
-<td>不存在</td>
-<td>存在</td>
-</tr>
-<tr>
-<td>串行化</td>
-<td>不存在</td>
-<td>不存在</td>
-<td>不存在</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: left">隔离级别</th>
+          <th style="text-align: left">脏读</th>
+          <th style="text-align: left">不可重复读</th>
+          <th style="text-align: left">幻读</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">读未提交</td>
+          <td style="text-align: left">存在</td>
+          <td style="text-align: left">存在</td>
+          <td style="text-align: left">存在</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">读已提交</td>
+          <td style="text-align: left">不存在</td>
+          <td style="text-align: left">存在</td>
+          <td style="text-align: left">存在</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">可重复读</td>
+          <td style="text-align: left">不存在</td>
+          <td style="text-align: left">不存在</td>
+          <td style="text-align: left">存在</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">串行化</td>
+          <td style="text-align: left">不存在</td>
+          <td style="text-align: left">不存在</td>
+          <td style="text-align: left">不存在</td>
+      </tr>
+  </tbody>
 </table></div>
 <p>下面用口语化对各个隔离级别进行解释。</p>
 <p>假设，数据库中有这样一个数据，id=1 name=张三</p>
@@ -473,27 +470,13 @@
         
         2024 专注于Java、Golang、软件架构、项目管理
     </section>
+    
     <section class="powerby">
         
             Talk is cheap, show me the bug/code. <br/>
         使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
-    
-    <section class="widget">
-        
-        
-            
-            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
-                
-                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
-                
-            </a>
-            
-        
-        
-    </section>
-
 </footer>
 
 

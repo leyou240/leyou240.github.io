@@ -12,7 +12,9 @@
         <pubDate>Fri, 24 May 2024 17:58:43 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/rust/pingora01/</guid>
-        <description>欣闻cloudflare开源了他们的反向代理或者说微服务网关组件 Pingora - https://github.com/cloudflare/pingora 如下，是pingora网关反向代理与缓存核心代码 pingora-proxy/src/proxy_trait.rs v0.3.0 1 2 3 4 5 6 7 8 9</description>
+        <description>&lt;p&gt;欣闻cloudflare开源了他们的反向代理或者说微服务网关组件 Pingora -  &lt;a class=&#34;link&#34; href=&#34;https://github.com/cloudflare/pingora&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/cloudflare/pingora&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;如下，是pingora网关反向代理与缓存核心代码&lt;/p&gt;</description>
         </item>
         
     </channel>

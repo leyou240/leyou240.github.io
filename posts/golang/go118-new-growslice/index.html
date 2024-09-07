@@ -13,9 +13,6 @@
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='Golang' /><meta property='article:tag' content='Runtime' /><meta property='article:published_time' content='2022-03-27T14:04:09&#43;08:00'/><meta property='article:modified_time' content='2022-03-27T14:04:09&#43;08:00'/>
 <meta name="twitter:title" content="Go1.18：新的切片扩容策略">
 <meta name="twitter:description" content="Golang的切片扩容策略以及1.18中带来的优化">
-  
-
-
     </head>
     <body class="
     article-page
@@ -434,25 +431,25 @@ $$
 <p>其中蓝色的线代表扩容前的每次容量大小变化，橙色线代表对应扩容后的大小变化，横坐标为实验序号，纵坐标为容量大小。</p>
 <p>可以看到在第11次与第12次扩容后，扩容后的容量反而出现了下降，由于存在内存对齐，所以最后的容量会向上取一个合理的数值。</p>
 <div class="table-wrapper"><table>
-<thead>
-<tr>
-<th></th>
-<th>扩容前容量</th>
-<th>扩容后容量</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>第11次</strong></td>
-<td>1000</td>
-<td>2048</td>
-</tr>
-<tr>
-<td><strong>第12次</strong></td>
-<td>1100</td>
-<td>1408</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: left"></th>
+          <th style="text-align: left">扩容前容量</th>
+          <th style="text-align: left">扩容后容量</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>第11次</strong></td>
+          <td style="text-align: left">1000</td>
+          <td style="text-align: left">2048</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>第12次</strong></td>
+          <td style="text-align: left">1100</td>
+          <td style="text-align: left">1408</td>
+      </tr>
+  </tbody>
 </table></div>
 <h2 id="growslice-in-go-118">Growslice In Go 1.18
 </h2><p>接下来我们回到刚刚发布的go 1.18版本中，在1.18中，优化了切片扩容的策略<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，让底层数组大小的增长更加平滑：</p>
@@ -532,34 +529,34 @@ newcap = oldcap + \frac{oldcap + 3 \times threshold}{4} \space\space\space\space
 $$
 通过减小阈值并固定增加一个常数，使得优化后的扩容的系数在阈值前后不再会出现从2到1.25的突变，该commit作者给出了几种原始容量下对应的“扩容系数”：</p>
 <div class="table-wrapper"><table>
-<thead>
-<tr>
-<th>原始容量</th>
-<th>扩容系数</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>256</td>
-<td>2.0</td>
-</tr>
-<tr>
-<td>512</td>
-<td>1.63</td>
-</tr>
-<tr>
-<td>1024</td>
-<td>1.44</td>
-</tr>
-<tr>
-<td>2048</td>
-<td>1.35</td>
-</tr>
-<tr>
-<td>4096</td>
-<td>1.30</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: left">原始容量</th>
+          <th style="text-align: left">扩容系数</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">256</td>
+          <td style="text-align: left">2.0</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">512</td>
+          <td style="text-align: left">1.63</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">1024</td>
+          <td style="text-align: left">1.44</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2048</td>
+          <td style="text-align: left">1.35</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">4096</td>
+          <td style="text-align: left">1.30</td>
+      </tr>
+  </tbody>
 </table></div>
 <p>我们重新验证一下前一节中的代码，可以看到1.18中优化后的扩容策略可以保证是一个单调函数</p>
 <p><img src="/posts/golang/go118-new-growslice/image-20220327155204270.png"
@@ -654,27 +651,13 @@ $$
         
         2024 专注于Java、Golang、软件架构、项目管理
     </section>
+    
     <section class="powerby">
         
             Talk is cheap, show me the bug/code. <br/>
         使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
-    
-    <section class="widget">
-        
-        
-            
-            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
-                
-                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
-                
-            </a>
-            
-        
-        
-    </section>
-
 </footer>
 
 

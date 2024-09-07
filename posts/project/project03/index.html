@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验 慢sql">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验\n慢sql的定义 我们将执行时间超过1秒的sql都定义为慢sql。同时会导致\n">
 <title>慢sql经验总结</title>
 
 <link rel='canonical' href='http://localhost:1313/posts/project/project03/'>
 
 <link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="慢sql经验总结">
-<meta property='og:description' content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验 慢sql">
+<meta property='og:description' content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验\n慢sql的定义 我们将执行时间超过1秒的sql都定义为慢sql。同时会导致\n">
 <meta property='og:url' content='http://localhost:1313/posts/project/project03/'>
 <meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:published_time' content='2022-06-20T21:00:00&#43;08:00'/><meta property='article:modified_time' content='2022-06-20T21:00:00&#43;08:00'/>
 <meta name="twitter:title" content="慢sql经验总结">
-<meta name="twitter:description" content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验 慢sql">
-  
-
-
+<meta name="twitter:description" content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验\n慢sql的定义 我们将执行时间超过1秒的sql都定义为慢sql。同时会导致\n">
     </head>
     <body class="
     article-page
@@ -359,62 +356,62 @@
 <h2 id="索引规范">索引规范
 </h2><p>通过explain语句可以提供关于SQL查询执行的详细信息和执行计划，并且可以了解sql的索引使用情况以及数据访问方式。通过使用Explain语句，可以了解SQL是如何执行的，并且可以看出其可能存在的性能问题。</p>
 <div class="table-wrapper"><table>
-<thead>
-<tr>
-<th>字段</th>
-<th>解析</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>id</td>
-<td>查询的每个操作的唯一标识符，无特殊含义</td>
-</tr>
-<tr>
-<td>select type</td>
-<td>查询操作的类型，常见的包括SIMPLE(简单查询)、PRIMARY(主键查询)、SUBQUERY(子查询)、DERIVED(派生表查询)等</td>
-</tr>
-<tr>
-<td>table</td>
-<td>表示查询操作设计的表名</td>
-</tr>
-<tr>
-<td>partitions</td>
-<td>表示查询操作涉及的分区信息</td>
-</tr>
-<tr>
-<td>type</td>
-<td>表示查询操作的连接类型或访问类型，常见的包括ALL(全表扫描)、index(索引扫描)、range(范围扫描)、ref(基于索引的引用)、eq_ref(唯一索引使用)、const(常数表)、system(系统表)等</td>
-</tr>
-<tr>
-<td>possible_keys</td>
-<td>表示查询可能使用的索引</td>
-</tr>
-<tr>
-<td>key</td>
-<td>表示查询操作实际使用的索引</td>
-</tr>
-<tr>
-<td>key_len</td>
-<td>表示索引使用的字节数</td>
-</tr>
-<tr>
-<td>ref</td>
-<td>表示查询操作使用的索引之间的引用关系</td>
-</tr>
-<tr>
-<td>rows</td>
-<td>执行查询操作时，mysql认为必须要去检查和判断的记录条数</td>
-</tr>
-<tr>
-<td>filtered</td>
-<td>表示符合查询条件的数据百分比</td>
-</tr>
-<tr>
-<td>Extra</td>
-<td>表示额外的信息和备注，如“Using where”表示使用了WHERE子句过滤，&ldquo;Usingindex“表示只使用了索引而没有访问表等。</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: left">字段</th>
+          <th style="text-align: left">解析</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">id</td>
+          <td style="text-align: left">查询的每个操作的唯一标识符，无特殊含义</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">select type</td>
+          <td style="text-align: left">查询操作的类型，常见的包括SIMPLE(简单查询)、PRIMARY(主键查询)、SUBQUERY(子查询)、DERIVED(派生表查询)等</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">table</td>
+          <td style="text-align: left">表示查询操作设计的表名</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">partitions</td>
+          <td style="text-align: left">表示查询操作涉及的分区信息</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">type</td>
+          <td style="text-align: left">表示查询操作的连接类型或访问类型，常见的包括ALL(全表扫描)、index(索引扫描)、range(范围扫描)、ref(基于索引的引用)、eq_ref(唯一索引使用)、const(常数表)、system(系统表)等</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">possible_keys</td>
+          <td style="text-align: left">表示查询可能使用的索引</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">key</td>
+          <td style="text-align: left">表示查询操作实际使用的索引</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">key_len</td>
+          <td style="text-align: left">表示索引使用的字节数</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">ref</td>
+          <td style="text-align: left">表示查询操作使用的索引之间的引用关系</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">rows</td>
+          <td style="text-align: left">执行查询操作时，mysql认为必须要去检查和判断的记录条数</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">filtered</td>
+          <td style="text-align: left">表示符合查询条件的数据百分比</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Extra</td>
+          <td style="text-align: left">表示额外的信息和备注，如“Using where”表示使用了WHERE子句过滤，&ldquo;Usingindex“表示只使用了索引而没有访问表等。</td>
+      </tr>
+  </tbody>
 </table></div>
 <p>需要重点关注几个特别的情况，出现以下几点都可能造成sql性能的降低。</p>
 <ol>
@@ -526,27 +523,13 @@
         
         2024 专注于Java、Golang、软件架构、项目管理
     </section>
+    
     <section class="powerby">
         
             Talk is cheap, show me the bug/code. <br/>
         使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
-    
-    <section class="widget">
-        
-        
-            
-            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
-                
-                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
-                
-            </a>
-            
-        
-        
-    </section>
-
 </footer>
 
 

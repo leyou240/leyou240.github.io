@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="AQS原理 底层使用如下组件 1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时sta">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="AQS原理 底层使用如下组件\n1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时state递减，若state=0时将owner设置为null，并且使用LockSupport.unpark(s.thread);方法唤醒等待队列中的第一个线程 //其他线程来获取锁时，若失败，则加入等待队列(双向链表)，并且使用LockSupport.park(this);休眠此线程 private transient Thread exclusiveOwnerThread; //标识当前线程所有者 //一个双向链表作为一个队列来使用，存放等待队列(保存待加锁的线程)。 //非公平锁：新来一个线程直接判断能不能加锁，若能加锁则直接加锁，不能加锁才放入等待队列 //公平锁：等待队列中的线程依次加锁，体现的“公平”的特点 ">
 <title>并发源码|AQS、ReentratLock原理</title>
 
 <link rel='canonical' href='http://localhost:1313/posts/java/juc/juc04/'>
 
 <link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="并发源码|AQS、ReentratLock原理">
-<meta property='og:description' content="AQS原理 底层使用如下组件 1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时sta">
+<meta property='og:description' content="AQS原理 底层使用如下组件\n1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时state递减，若state=0时将owner设置为null，并且使用LockSupport.unpark(s.thread);方法唤醒等待队列中的第一个线程 //其他线程来获取锁时，若失败，则加入等待队列(双向链表)，并且使用LockSupport.park(this);休眠此线程 private transient Thread exclusiveOwnerThread; //标识当前线程所有者 //一个双向链表作为一个队列来使用，存放等待队列(保存待加锁的线程)。 //非公平锁：新来一个线程直接判断能不能加锁，若能加锁则直接加锁，不能加锁才放入等待队列 //公平锁：等待队列中的线程依次加锁，体现的“公平”的特点 ">
 <meta property='og:url' content='http://localhost:1313/posts/java/juc/juc04/'>
 <meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='juc' /><meta property='article:published_time' content='2014-03-19T21:00:00&#43;08:00'/><meta property='article:modified_time' content='2014-03-19T21:00:00&#43;08:00'/>
 <meta name="twitter:title" content="并发源码|AQS、ReentratLock原理">
-<meta name="twitter:description" content="AQS原理 底层使用如下组件 1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时sta">
-  
-
-
+<meta name="twitter:description" content="AQS原理 底层使用如下组件\n1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时state递减，若state=0时将owner设置为null，并且使用LockSupport.unpark(s.thread);方法唤醒等待队列中的第一个线程 //其他线程来获取锁时，若失败，则加入等待队列(双向链表)，并且使用LockSupport.park(this);休眠此线程 private transient Thread exclusiveOwnerThread; //标识当前线程所有者 //一个双向链表作为一个队列来使用，存放等待队列(保存待加锁的线程)。 //非公平锁：新来一个线程直接判断能不能加锁，若能加锁则直接加锁，不能加锁才放入等待队列 //公平锁：等待队列中的线程依次加锁，体现的“公平”的特点 ">
     </head>
     <body class="
     article-page
@@ -525,27 +522,13 @@
         
         2024 专注于Java、Golang、软件架构、项目管理
     </section>
+    
     <section class="powerby">
         
             Talk is cheap, show me the bug/code. <br/>
         使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
-    
-    <section class="widget">
-        
-        
-            
-            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
-                
-                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
-                
-            </a>
-            
-        
-        
-    </section>
-
 </footer>
 
 

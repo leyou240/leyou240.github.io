@@ -12,7 +12,7 @@
         <pubDate>Sun, 27 Mar 2022 14:04:09 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/golang/go118-new-growslice/</guid>
-        <description>随着go 1.18版本的发布，go社区终于迎来了期盼已久的正式泛型语法，然而我在浏览关于1.18的changelog时发现1.18对于slic</description>
+        <description>&lt;p&gt;随着go 1.18版本的发布，go社区终于迎来了期盼已久的正式泛型语法，然而我在浏览关于1.18的changelog时发现1.18对于slice的扩容策略也做了一些修改，刚好我最近正在看draven大佬的新书也讲到了slice底层的源码的一些运行逻辑，在好奇心的驱使下，想知道社区究竟改动了什么以及为什么作出这些改动，于是翻开1.18的源码，便有了这篇文章。&lt;/p&gt;</description>
         </item>
         
     </channel>

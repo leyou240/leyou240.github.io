@@ -12,7 +12,7 @@
         <pubDate>Tue, 12 Sep 2023 12:22:44 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/springboot3jdk21/</guid>
-        <description>随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk</description>
+        <description>&lt;p&gt;随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk21推出了分代zgc。根据jdk官方说法，此gc算法适用于任何内存条件下，多核cpu环境。我们也在各个环境的生产系统做到了验证（2c4g、4c8g、8c16g）。对于中间件，rocketmq、kafka、es、nacos等。因所用jdk版本尚未完全支持，且目前也没有遇到过问题，暂未做升级。&lt;/p&gt;</description>
         </item>
         
     </channel>

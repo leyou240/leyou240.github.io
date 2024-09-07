@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk21推出了分代zgc。根据jdk官方说法，此gc算法适用于任何内存条件下，多核cpu环境。我们也在各个环境的生产系统做到了验证（2c4g、4c8g、8c16g）。对于中间件，rocketmq、kafka、es、nacos等。因所用jdk版本尚未完全支持，且目前也没有遇到过问题，暂未做升级。\n">
 <title>升级到springboot3与jdk21需要做的工作</title>
 
 <link rel='canonical' href='http://localhost:1313/posts/java/springboot3jdk21/'>
 
 <link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="升级到springboot3与jdk21需要做的工作">
-<meta property='og:description' content="随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk">
+<meta property='og:description' content="随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk21推出了分代zgc。根据jdk官方说法，此gc算法适用于任何内存条件下，多核cpu环境。我们也在各个环境的生产系统做到了验证（2c4g、4c8g、8c16g）。对于中间件，rocketmq、kafka、es、nacos等。因所用jdk版本尚未完全支持，且目前也没有遇到过问题，暂未做升级。\n">
 <meta property='og:url' content='http://localhost:1313/posts/java/springboot3jdk21/'>
 <meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='jdk21' /><meta property='article:tag' content='springboot3' /><meta property='article:published_time' content='2023-09-12T12:22:44&#43;08:00'/><meta property='article:modified_time' content='2023-09-12T12:22:44&#43;08:00'/>
 <meta name="twitter:title" content="升级到springboot3与jdk21需要做的工作">
-<meta name="twitter:description" content="随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk">
-  
-
-
+<meta name="twitter:description" content="随着springboot3的正式版推出，最小可用的jdk版本为17。最大的亮点是颠覆性的zgc，可以将stw时间控制在亚毫秒级别，接着jdk21推出了分代zgc。根据jdk官方说法，此gc算法适用于任何内存条件下，多核cpu环境。我们也在各个环境的生产系统做到了验证（2c4g、4c8g、8c16g）。对于中间件，rocketmq、kafka、es、nacos等。因所用jdk版本尚未完全支持，且目前也没有遇到过问题，暂未做升级。\n">
     </head>
     <body class="
     article-page
@@ -466,27 +463,13 @@
         
         2024 专注于Java、Golang、软件架构、项目管理
     </section>
+    
     <section class="powerby">
         
             Talk is cheap, show me the bug/code. <br/>
         使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
-    
-    <section class="widget">
-        
-        
-            
-            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
-                
-                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
-                
-            </a>
-            
-        
-        
-    </section>
-
 </footer>
 
 

@@ -12,7 +12,7 @@
         <pubDate>Tue, 20 Jun 2017 21:00:00 +0800</pubDate>
         
         <guid>http://localhost:1313/posts/java/framework/dubbo/dubbo01/</guid>
-        <description>Dubbo 为了更好地达到 OCP 原则（即“对扩展开放，对修改封闭”的原则），采用了“微内核+插件”的架构。那什么是微内核架构呢？微内核架构也被称为插件化架</description>
+        <description>&lt;p&gt;Dubbo 为了更好地达到 OCP 原则（即“对扩展开放，对修改封闭”的原则），采用了“&lt;strong&gt;微内核+插件&lt;/strong&gt;”的架构。那什么是微内核架构呢？微内核架构也被称为插件化架构（Plug-in Architecture），这是一种面向功能进行拆分的可扩展性架构。内核功能是比较稳定的，只负责管理插件的生命周期，不会因为系统功能的扩展而不断进行修改。功能上的扩展全部封装到插件之中，插件模块是独立存在的模块，包含特定的功能，能拓展内核系统的功能。&lt;/p&gt;</description>
         </item>
         
     </channel>

@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以远大于操作系统线程的数量。它们可以更有效地运行以thread-per-request（每个请求一个线程，就大大降低了线程上下文的切换）的方式编写的服务器应用程序，从而实现更高的吞吐量和更少的硬件浪费。\n">
 <title>java使用虚拟线程遇到的问题</title>
 
 <link rel='canonical' href='http://localhost:1313/posts/java/virtualthreads/'>
 
 <link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="java使用虚拟线程遇到的问题">
-<meta property='og:description' content="虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以">
+<meta property='og:description' content="虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以远大于操作系统线程的数量。它们可以更有效地运行以thread-per-request（每个请求一个线程，就大大降低了线程上下文的切换）的方式编写的服务器应用程序，从而实现更高的吞吐量和更少的硬件浪费。\n">
 <meta property='og:url' content='http://localhost:1313/posts/java/virtualthreads/'>
 <meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='springboot3' /><meta property='article:tag' content='virtualThreads' /><meta property='article:published_time' content='2023-12-12T12:22:44&#43;08:00'/><meta property='article:modified_time' content='2023-12-12T12:22:44&#43;08:00'/>
 <meta name="twitter:title" content="java使用虚拟线程遇到的问题">
-<meta name="twitter:description" content="虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以">
-  
-
-
+<meta name="twitter:description" content="虚拟线程 虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以远大于操作系统线程的数量。它们可以更有效地运行以thread-per-request（每个请求一个线程，就大大降低了线程上下文的切换）的方式编写的服务器应用程序，从而实现更高的吞吐量和更少的硬件浪费。\n">
     </head>
     <body class="
     article-page
@@ -618,27 +615,13 @@
         
         2024 专注于Java、Golang、软件架构、项目管理
     </section>
+    
     <section class="powerby">
         
             Talk is cheap, show me the bug/code. <br/>
         使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
-    
-    <section class="widget">
-        
-        
-            
-            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
-                
-                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
-                
-            </a>
-            
-        
-        
-    </section>
-
 </footer>
 
 
