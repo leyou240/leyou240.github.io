@@ -8,10 +8,10 @@
         <language>zh-cn</language>
         <lastBuildDate>Thu, 11 Jun 2015 21:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>事务隔离级别，MVCC与国内主流分布式事务方案</title>
-        <link>http://localhost:1313/posts/java/sc07/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sc07/</link>
         <pubDate>Thu, 11 Jun 2015 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sc07/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sc07/</guid>
         <description>ACID与隔离级别 事务具有以下四种特征： 原子性（Atomicity） 事务包含的所有操作要么全部成功，要么全部失败回滚。 一致性（Consist</description>
         </item>
         

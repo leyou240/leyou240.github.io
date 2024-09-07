@@ -8,66 +8,66 @@
         <language>zh-cn</language>
         <lastBuildDate>Fri, 13 Jun 2014 21:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/juc%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>并发源码|线程池原理</title>
-        <link>http://localhost:1313/posts/java/juc08/</link>
+        <link>http://localhost:1313/posts/java/juc/juc08/</link>
         <pubDate>Fri, 13 Jun 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc08/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc08/</guid>
         <description>线程池 线程池的意义：频繁的创建和销毁线程，性能开销比较大。线程池创建一些线程，执行完任务后不立即销毁，可以等待去执行下一个任务 线程池相关参数</description>
         </item>
         <item>
         <title>并发源码|其他并发容器</title>
-        <link>http://localhost:1313/posts/java/juc07/</link>
+        <link>http://localhost:1313/posts/java/juc/juc07/</link>
         <pubDate>Sun, 27 Apr 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc07/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc07/</guid>
         <description>CopyOnWriteArrayList 写时复制的并发Arraylist容器，底层使用锁来实现 底层使用volatile标记array，保证并发修改后能立即可见。 另外使用Reent</description>
         </item>
         <item>
         <title>并发源码|Hashmap死循环问题与ConcurrentHashmap</title>
-        <link>http://localhost:1313/posts/java/juc06/</link>
+        <link>http://localhost:1313/posts/java/juc/juc06/</link>
         <pubDate>Fri, 18 Apr 2014 11:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc06/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc06/</guid>
         <description>jdk7hashmap死循环问题 在多线程并发环境下。不应该用此容器，而应使用线程安全的容器如ConcurrentHashmap 其死循环主要是</description>
         </item>
         <item>
         <title>并发源码|并发常用组件</title>
-        <link>http://localhost:1313/posts/java/juc05/</link>
+        <link>http://localhost:1313/posts/java/juc/juc05/</link>
         <pubDate>Fri, 11 Apr 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc05/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc05/</guid>
         <description>CountDownLatch：同步等待多个线程完成任务的并发组件 CyclicBarrier：将工作任务给多线程分而治之的并发组件，此组件比C</description>
         </item>
         <item>
         <title>并发源码|AQS、ReentratLock原理</title>
-        <link>http://localhost:1313/posts/java/juc04/</link>
+        <link>http://localhost:1313/posts/java/juc/juc04/</link>
         <pubDate>Wed, 19 Mar 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc04/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc04/</guid>
         <description>AQS原理 底层使用如下组件 1 2 3 4 5 6 7 8 9 10 11 private volatile int state; //标识同步状态，第一次加锁时设置为1，若重入加锁，则state递增。释放锁时sta</description>
         </item>
         <item>
         <title>并发源码|Atomicxxx原理</title>
-        <link>http://localhost:1313/posts/java/juc02/</link>
+        <link>http://localhost:1313/posts/java/juc/juc02/</link>
         <pubDate>Tue, 11 Mar 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc02/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc02/</guid>
         <description>AtomicXxx原子类底层的一些原理 AtomicLong、AtomicBoolean、AtomicReference、LongAdder等</description>
         </item>
         <item>
         <title>并发源码|synchronized、wait与notify</title>
-        <link>http://localhost:1313/posts/java/juc02/</link>
+        <link>http://localhost:1313/posts/java/juc/juc02/</link>
         <pubDate>Sat, 08 Mar 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc02/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc02/</guid>
         <description>synchronized的底层原理 跟jvm及monitor有关。 如果用到了synchronized关键字，在底层编译后的jvm指令中，会有m</description>
         </item>
         <item>
         <title>并发源码| JMM与volatile</title>
-        <link>http://localhost:1313/posts/java/juc01/</link>
+        <link>http://localhost:1313/posts/java/juc/juc01/</link>
         <pubDate>Sat, 01 Mar 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/juc01/</guid>
+        <guid>http://localhost:1313/posts/java/juc/juc01/</guid>
         <description>主内存的数据会被加载到cpu本地缓存里去，cpu后面会读写自己的缓存 缓存模型下的并发问题 java内存模型 read（从主存读取），load（将</description>
         </item>
         

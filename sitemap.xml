@@ -41,6 +41,21 @@
     <loc>http://localhost:1313/posts/java/springboot3jdk21/</loc>
     <lastmod>2023-09-12T12:22:44+08:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/posts/project/project03/</loc>
+    <lastmod>2022-06-20T21:00:00+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/%E9%A1%B9%E7%9B%AE/</loc>
+    <lastmod>2022-06-20T21:00:00+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/project/project02/project02/</loc>
+    <lastmod>2022-06-14T21:00:00+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/mapstruct/</loc>
+    <lastmod>2022-06-14T21:00:00+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/project/project01/</loc>
+    <lastmod>2022-06-11T21:00:00+08:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/posts/golang/go118-new-growslice/</loc>
     <lastmod>2022-03-27T14:04:09+08:00</lastmod>
   </url><url>
@@ -56,13 +71,13 @@
     <loc>http://localhost:1313/tags/nacos/</loc>
     <lastmod>2020-06-02T22:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sca02/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sca02/</loc>
     <lastmod>2020-06-02T22:00:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81/</loc>
     <lastmod>2020-06-02T22:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sca01/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sca01/</loc>
     <lastmod>2020-06-01T21:00:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/springcloud/</loc>
@@ -71,8 +86,14 @@
     <loc>http://localhost:1313/categories/springcloud%E6%BA%90%E7%A0%81/</loc>
     <lastmod>2019-12-13T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sc06/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sc06/</loc>
     <lastmod>2019-12-13T21:00:00+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/dubbo/</loc>
+    <lastmod>2017-06-20T21:00:00+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/java/framework/dubbo/dubbo01/</loc>
+    <lastmod>2017-06-20T21:00:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/tcc/</loc>
     <lastmod>2015-06-11T21:00:00+08:00</lastmod>
@@ -80,22 +101,22 @@
     <loc>http://localhost:1313/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</loc>
     <lastmod>2015-06-11T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sc07/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sc07/</loc>
     <lastmod>2015-06-11T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sc05/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sc05/</loc>
     <lastmod>2015-05-30T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sc04/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sc04/</loc>
     <lastmod>2015-05-23T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sc03/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sc03/</loc>
     <lastmod>2015-05-13T14:09:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sc02/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sc02/</loc>
     <lastmod>2015-03-13T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/sc01/</loc>
+    <loc>http://localhost:1313/posts/java/springcloud/sc01/</loc>
     <lastmod>2014-12-12T21:00:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/juc/</loc>
@@ -104,19 +125,19 @@
     <loc>http://localhost:1313/categories/juc%E6%BA%90%E7%A0%81/</loc>
     <lastmod>2014-06-13T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc08/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc08/</loc>
     <lastmod>2014-06-13T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc07/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc07/</loc>
     <lastmod>2014-04-27T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc06/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc06/</loc>
     <lastmod>2014-04-18T11:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc05/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc05/</loc>
     <lastmod>2014-04-11T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/jdk2/</loc>
+    <loc>http://localhost:1313/posts/java/jdk/jdk2/</loc>
     <lastmod>2014-03-31T21:00:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/jdk/</loc>
@@ -125,19 +146,19 @@
     <loc>http://localhost:1313/categories/jdk%E6%BA%90%E7%A0%81/</loc>
     <lastmod>2014-03-31T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc04/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc04/</loc>
     <lastmod>2014-03-19T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/jdk01/</loc>
+    <loc>http://localhost:1313/posts/java/jdk/jdk01/</loc>
     <lastmod>2014-03-13T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc02/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc02/</loc>
     <lastmod>2014-03-11T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc02/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc02/</loc>
     <lastmod>2014-03-08T21:00:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/java/juc01/</loc>
+    <loc>http://localhost:1313/posts/java/juc/juc01/</loc>
     <lastmod>2014-03-01T21:00:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/archives/</loc>

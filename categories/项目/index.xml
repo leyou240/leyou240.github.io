@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>项目 on 专注于Java、Golang、软件架构、项目管理</title>
+        <link>http://localhost:1313/categories/%E9%A1%B9%E7%9B%AE/</link>
+        <description>Recent content in 项目 on 专注于Java、Golang、软件架构、项目管理</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Mon, 20 Jun 2022 21:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/%E9%A1%B9%E7%9B%AE/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>慢sql经验总结</title>
+        <link>http://localhost:1313/posts/project/project03/</link>
+        <pubDate>Mon, 20 Jun 2022 21:00:00 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/project/project03/</guid>
+        <description>在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验 慢sql</description>
+        </item>
+        <item>
+        <title>java对象转换神器-mapstruct</title>
+        <link>http://localhost:1313/posts/project/project02/project02/</link>
+        <pubDate>Tue, 14 Jun 2022 21:00:00 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/project/project02/project02/</guid>
+        <description>在java开发中，对象之间的转换是一项常见的任务。通常有2种做法：手写和使用JavaBeanUtils。前者降低工作效率还容易出错，而后者因</description>
+        </item>
+        <item>
+        <title>java项目中的一些通用处理</title>
+        <link>http://localhost:1313/posts/project/project01/</link>
+        <pubDate>Sat, 11 Jun 2022 21:00:00 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/project/project01/</guid>
+        <description>一、全局异常处理 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62</description>
+        </item>
+        
+    </channel>
+</rss>

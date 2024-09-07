@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Dubbo on 专注于Java、Golang、软件架构、项目管理</title>
+        <link>http://localhost:1313/categories/dubbo/</link>
+        <description>Recent content in Dubbo on 专注于Java、Golang、软件架构、项目管理</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Tue, 20 Jun 2017 21:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/dubbo/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>dubbo源码浅析</title>
+        <link>http://localhost:1313/posts/java/framework/dubbo/dubbo01/</link>
+        <pubDate>Tue, 20 Jun 2017 21:00:00 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/java/framework/dubbo/dubbo01/</guid>
+        <description>Dubbo 为了更好地达到 OCP 原则（即“对扩展开放，对修改封闭”的原则），采用了“微内核+插件”的架构。那什么是微内核架构呢？微内核架构也被称为插件化架</description>
+        </item>
+        
+    </channel>
+</rss>

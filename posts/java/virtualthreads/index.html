@@ -303,7 +303,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 3 分钟
+                    阅读时长: 4 分钟
                 </time>
             </div>
         
@@ -319,7 +319,14 @@
     
     
     <h2 id="虚拟线程">虚拟线程
-</h2><p>虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以远大于操作系统线程的数量。如此一来，就大大降低了线程上下文的切换，可以提高性能</p>
+</h2><p>虚拟线程（Virtual Thread）是 JDK 而不是 OS 实现的轻量级线程，由 JVM 调度。许多虚拟线程共享同一个操作系统线程，虚拟线程的数量可以远大于操作系统线程的数量。它们可以更有效地运行以thread-per-request（每个请求一个线程，就大大降低了线程上下文的切换）的方式编写的服务器应用程序，从而实现更高的吞吐量和更少的硬件浪费。</p>
+<p>虚拟线程有几个核心的对象：</p>
+<ul>
+<li><strong>Continuation</strong>：译为“续延”，是用户真实任务的包装器，<strong>虚拟线程会把任务包装到一个Continuation实例中</strong>，当任务需要阻塞挂起的时候，会调用Continuation的yield操作进行阻塞</li>
+<li><strong>Scheduler</strong>：译为“调度器”，会把任务提交到一个平台线程池中执行，虚拟线程中维护了一个默认的调度器DEFAULT_SCHEDULER，<strong>这是一个 ForkJoinPool 实例</strong>，最大线程数默认是系统核心线程数，最大为 256，可以通过 jdk.virtualThreadScheduler.maxPoolSize 进行设置。</li>
+<li><strong>carrier</strong>：载体线程（Thread对象），指的是<strong>负责执行虚拟线程中任务的平台线程。</strong></li>
+<li><strong>runContinuation</strong>：一个Runnable对象，<strong>用于在任务运行或继续之前，虚拟线程将装载到当前线程上。当任务完成或完成时，将其卸载</strong>。</li>
+</ul>
 <h3 id="如何创建虚拟线程">如何创建虚拟线程
 </h3><p>1、使用**<code>Thread.startVirtualThread</code>**</p>
 <div class="highlight"><div class="chroma">
@@ -531,7 +538,9 @@
 </h2><p>1、强制使用**<code>ReentrantLock</code>**：虚拟线程可以更好的利用cpu，支持了java版本的协程。但在当前版本无法和*<code>synchronized</code>*关键字很好的适配。在项目中如果需要线程同步的场景，</p>
 <p>2、统一使用虚拟线程：在大多数场景可以抛弃掉原有的各种线程池，由jvm为我们做调度。再也不怕因线程太多而导致oom了</p>
 <p>3、在会调用到native方法和jni的地方：不应使用虚拟线程</p>
-<p>4、虚拟线程仅适用于</p>
+<p>4、虚拟线程适用于长时间的IO密集型任务，而不适用于长时间的CPU密集型任务</p>
+<p>5、虚拟线程开启后，应使用较新版本的mybatis和mysql驱动</p>
+<p>6、经过测试，虚拟线程和webfulx时吞吐量大致相当。但使用虚拟线程无需额外的学习成本。虚拟线程吞吐量远超普通线程池！</p>
 <h2 id="references">References
 </h2><p><a class="link" href="https://mikemybytes.com/2024/02/28/curiosities-of-java-virtual-threads-pinning-with-synchronized/"  target="_blank" rel="noopener"
     >虚拟线程与synchronized</a></p>
@@ -545,6 +554,8 @@
     >Replace synchronized with ReentrantLock</a></p>
 <p><a class="link" href="https://github.com/brettwooldridge/HikariCP/issues/2151"  target="_blank" rel="noopener"
     >hikari</a></p>
+<p><a class="link" href="https://mp.weixin.qq.com/s/G1-qLXqHva193LBJ6pSbgg"  target="_blank" rel="noopener"
+    >淘宝对虚拟线程的研究</a></p>
 
 </section>
 

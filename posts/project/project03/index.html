@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验 慢sql">
+<title>慢sql经验总结</title>
+
+<link rel='canonical' href='http://localhost:1313/posts/project/project03/'>
+
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="慢sql经验总结">
+<meta property='og:description' content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验 慢sql">
+<meta property='og:url' content='http://localhost:1313/posts/project/project03/'>
+<meta property='og:site_name' content='专注于Java、Golang、软件架构、项目管理'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:published_time' content='2022-06-20T21:00:00&#43;08:00'/><meta property='article:modified_time' content='2022-06-20T21:00:00&#43;08:00'/>
+<meta name="twitter:title" content="慢sql经验总结">
+<meta name="twitter:description" content="在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验 慢sql">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "dark");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu5115172380169423548.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">✅</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">专注于Java、Golang、软件架构、项目管理</a></h1>
+            <h2 class="site-description">希望每天快乐！</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/leyou240'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9e9e9e" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+  <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+  <line x1="9" y1="9" x2="10" y2="9" />
+  <line x1="9" y1="13" x2="15" y2="13" />
+  <line x1="9" y1="17" x2="15" y2="17" />
+</svg>
+
+                
+                <span>Posts</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#慢sql的定义">慢sql的定义</a></li>
+    <li><a href="#慢sql常见原因">慢sql常见原因</a></li>
+    <li><a href="#如何发现慢sql">如何发现慢sql</a></li>
+    <li><a href="#制定sql规范">制定sql规范</a></li>
+    <li><a href="#索引规范">索引规范</a>
+      <ul>
+        <li><a href="#规范">规范</a></li>
+      </ul>
+    </li>
+    <li><a href="#慢sql治理流程">慢sql治理流程</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E9%A1%B9%E7%9B%AE/" >
+                项目
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/project/project03/">慢sql经验总结</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 20, 2022</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 5 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验</p>
+<h2 id="慢sql的定义">慢sql的定义
+</h2><p>我们将执行时间超过1秒的sql都定义为慢sql。同时会导致</p>
+<ol>
+<li>系统的响应时间延迟，影响用户体验</li>
+<li>资源占用增加，增高了系统的负载，其他请求响应时间也可能会收到影响。</li>
+<li>慢SQL占用数据库连接的时间长,如果有大量慢SQL查询同时执行，可能会导致数据库连接池的连接被全部占用，导致数据连接池打满、缓冲区溢出等问题，使数据库无法响应其他请求。</li>
+<li>还有可能造成锁竞争增加、数据不一致等问题</li>
+</ol>
+<p>因此，需要及时发现和优先慢sql，对系统稳定性是非常重要的</p>
+<h2 id="慢sql常见原因">慢sql常见原因
+</h2><ol>
+<li>缺乏索引/索引未生效，导致数据库全表扫描，会产生大量的IO消耗，产生慢SQL。</li>
+<li>单表数据量太大，会导致加索引的效果不够明显。</li>
+<li>SQL语句书写不当，例如join或者子查询过多、in元素过多、limit深分页问题、order by导致文件排序、group by使用临时表等。</li>
+<li>数据库在刷“脏页”，redo log写满了，导致所有系统更新被堵住，无法写入了。</li>
+<li>执行SQL的时候，遇到表锁或者行锁，只能等待锁被释放，导致了慢SQL。</li>
+</ol>
+<h2 id="如何发现慢sql">如何发现慢sql
+</h2><ol>
+<li>数据库开启慢sql日志：数据库会将执行时间超过一定阈值的sql记录到日志中</li>
+<li>链路追踪：通过慢接口以及代码，定位慢sql</li>
+<li>开发过程中，进行代码review。通过对sql语句分析，发现索引使用不当、造成全表扫描、sql扫描行数过多、出现文件排序等。强制其修改后再提交</li>
+<li>对数据库进行监控，重点对cpu使用情况、会话数，发现异常及时告警同时安排值班同时定位问题，尽量在第一时间解决数据库风险。同事建立问题跟踪，若因业务影响则指定负责人推进。</li>
+</ol>
+<h2 id="制定sql规范">制定sql规范
+</h2><ol>
+<li>**【强制】**不允许使用select *</li>
+<li>**【强制】**不要使用count(列名)或count(常量)来替代count(<em>)，count(</em>)就是SQL92定义的标准统计行数的语法，跟数据库无关，跟NULL和非NULL无关。</li>
+<li>**【强制】**count(distinct col) 计算该列除NULL之外的不重复数量。注意 count(distinct col1, col2) 如果其中一列全为NULL，那么即使另一列有不同的值，也返回为0。</li>
+<li>**【强制】**若列会执行计算，则强制其使用默认值不允许为NULL，当某一列的值全是NULL时，count(col)的返回结果为0，但sum(col)的返回结果为NULL，因此使用sum()时需注意NPE问题。</li>
+<li>**【强制】**使用ISNULL()来判断是否为NULL值。</li>
+<li>**【强制】**对于数据库中表记录的查询和变更，只要涉及多个表，都需要在列名前加表的别名（或表名）进行限定。</li>
+<li>**【强制】**在代码中写分页查询逻辑时，若count为0应直接返回，避免执行后面的分页语句。</li>
+<li>**【强制】**不得使用外键与级联，一切外键概念必须在应用层解决。</li>
+</ol>
+<h2 id="索引规范">索引规范
+</h2><p>通过explain语句可以提供关于SQL查询执行的详细信息和执行计划，并且可以了解sql的索引使用情况以及数据访问方式。通过使用Explain语句，可以了解SQL是如何执行的，并且可以看出其可能存在的性能问题。</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>查询的每个操作的唯一标识符，无特殊含义</td>
+</tr>
+<tr>
+<td>select type</td>
+<td>查询操作的类型，常见的包括SIMPLE(简单查询)、PRIMARY(主键查询)、SUBQUERY(子查询)、DERIVED(派生表查询)等</td>
+</tr>
+<tr>
+<td>table</td>
+<td>表示查询操作设计的表名</td>
+</tr>
+<tr>
+<td>partitions</td>
+<td>表示查询操作涉及的分区信息</td>
+</tr>
+<tr>
+<td>type</td>
+<td>表示查询操作的连接类型或访问类型，常见的包括ALL(全表扫描)、index(索引扫描)、range(范围扫描)、ref(基于索引的引用)、eq_ref(唯一索引使用)、const(常数表)、system(系统表)等</td>
+</tr>
+<tr>
+<td>possible_keys</td>
+<td>表示查询可能使用的索引</td>
+</tr>
+<tr>
+<td>key</td>
+<td>表示查询操作实际使用的索引</td>
+</tr>
+<tr>
+<td>key_len</td>
+<td>表示索引使用的字节数</td>
+</tr>
+<tr>
+<td>ref</td>
+<td>表示查询操作使用的索引之间的引用关系</td>
+</tr>
+<tr>
+<td>rows</td>
+<td>执行查询操作时，mysql认为必须要去检查和判断的记录条数</td>
+</tr>
+<tr>
+<td>filtered</td>
+<td>表示符合查询条件的数据百分比</td>
+</tr>
+<tr>
+<td>Extra</td>
+<td>表示额外的信息和备注，如“Using where”表示使用了WHERE子句过滤，&ldquo;Usingindex“表示只使用了索引而没有访问表等。</td>
+</tr>
+</tbody>
+</table></div>
+<p>需要重点关注几个特别的情况，出现以下几点都可能造成sql性能的降低。</p>
+<ol>
+<li>使用全表扫描，性能最差，即type=&ldquo;ALL&rdquo;</li>
+<li>扫描行数过多，即rows&gt;阈值，阈值一般为10w</li>
+<li>查询时使用了排序操作，也比较耗时，即Extra包含&quot;Using filesort&rdquo;</li>
+<li>索引类型为index，代表全盘扫描了索引的数据，Extra信息为Using where，代表要搜索的列没有被索引覆盖，需要回表，性能较差。</li>
+</ol>
+<h3 id="规范">规范
+</h3><ol>
+<li>主键不允许使用uuid，小表可以使用自助主键，大表的主键必须使用递增的id组件</li>
+<li>尽量保证核心sql查询的，where、order by、group by 都可以用上索引。建立联合索引，尽量让区分度大的在索引左边，经常做范围查询的字段放在最后一个</li>
+<li>索引原则上不应该超过3个。尽量利用1到2个多字段联合索引，抗下80%以上的查询。然后在剩下20%场景，建立一个联合索引。保证99%以上的查询都能充分利用索引</li>
+</ol>
+<h2 id="慢sql治理流程">慢sql治理流程
+</h2><ol>
+<li>高危慢sql，建立任务持续跟踪，每个版本汇报，并指定处理优先级，不同的优先级可以容忍的时间不同，若超过容忍时间，则影响团队评价。</li>
+<li>针对重点业务、慢sql高发团队，安排有经验的同事协助推进。</li>
+<li>新功能开发过程中，根据实际情况，及时或排期处理。</li>
+</ol>
+<h2 id="总结">总结
+</h2><p>慢sql可能引起很严重的系统性能问题，影响系统的可用性和稳定性。需要及时发现和治理。因此，我们建立了一套发现-分析-治理的流程，极大的减少了因慢sql引起的系统性能问题</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/posts/project/project02/project02/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">java对象转换神器-mapstruct</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/project/project01/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">java项目中的一些通用处理</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2014 - 
+        
+        2024 专注于Java、Golang、软件架构、项目管理
+    </section>
+    <section class="powerby">
+        
+            Talk is cheap, show me the bug/code. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+    
+    <section class="widget">
+        
+        
+            
+            <a href="https://curl.qcloud.com/M6XN6Msw" title="【腾讯云】云产品限时秒杀，爆款1核2G云服务器，首年99元" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345%20200%20-d8f8b6a3612b27b7ab48d1bd19a2e80e8dddef86.jpg">
+                
+            </a>
+            
+        
+        
+    </section>
+
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

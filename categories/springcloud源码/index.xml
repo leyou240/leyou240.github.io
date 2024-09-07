@@ -8,50 +8,50 @@
         <language>zh-cn</language>
         <lastBuildDate>Fri, 13 Dec 2019 21:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/springcloud%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>SpringCloud源码| zuul源码</title>
-        <link>http://localhost:1313/posts/java/sc06/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sc06/</link>
         <pubDate>Fri, 13 Dec 2019 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sc06/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sc06/</guid>
         <description>zuul主要使用责任链设计模式 其中有如下过滤器 pre过滤器 -3：ServletDetectionFilter -2：Servlet30Wrap</description>
         </item>
         <item>
         <title>SpringCloud源码| ribbon源码</title>
-        <link>http://localhost:1313/posts/java/sc05/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sc05/</link>
         <pubDate>Sat, 30 May 2015 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sc05/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sc05/</guid>
         <description>ribbon的作用：一个服务部署多个实例时，负责负载均衡请求的组件 ribbon重要组件 ILoadBalancer：负载均衡器，其中包含了IR</description>
         </item>
         <item>
         <title>SpringCloud源码| hystrix源码</title>
-        <link>http://localhost:1313/posts/java/sc04/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sc04/</link>
         <pubDate>Sat, 23 May 2015 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sc04/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sc04/</guid>
         <description>hystrix在微服务中扮演重要作用，其实现了隔离、熔断、降级等重要组件 但在spring cloud中，常与feign搭配起来使用。故本文仅包</description>
         </item>
         <item>
         <title>SpringCloud源码| feign源码</title>
-        <link>http://localhost:1313/posts/java/sc03/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sc03/</link>
         <pubDate>Wed, 13 May 2015 14:09:48 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sc03/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sc03/</guid>
         <description>feign核心组件 Encoder和Decoder：编解码组件。SpringEncoder和ResponseEntityDecoder Cont</description>
         </item>
         <item>
         <title>SpringCloud源码| eureka源码</title>
-        <link>http://localhost:1313/posts/java/sc02/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sc02/</link>
         <pubDate>Fri, 13 Mar 2015 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sc02/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sc02/</guid>
         <description>eureka server启动流程 EurekaBootStrap#contextInitialized(ServletContextEvent) 方法进行初始化 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 @Override public void contextInitialized(ServletContextEvent event) { try { //1、初始化</description>
         </item>
         <item>
         <title>SpringCloud源码| 从单体到微服务</title>
-        <link>http://localhost:1313/posts/java/sc01/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sc01/</link>
         <pubDate>Fri, 12 Dec 2014 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sc01/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sc01/</guid>
         <description>1、代码重复问题 拆分成多个服务，通过网络请求不同的服务。代码不再耦合重复 2、多人协作效率问题 各种专注于自己的小范围即可，代码不会与其他服务冲</description>
         </item>
         

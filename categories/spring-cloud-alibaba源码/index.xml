@@ -8,18 +8,18 @@
         <language>zh-cn</language>
         <lastBuildDate>Tue, 02 Jun 2020 22:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/spring-cloud-alibaba%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>nacos客户端是如何进行服务发现的？</title>
-        <link>http://localhost:1313/posts/java/sca02/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sca02/</link>
         <pubDate>Tue, 02 Jun 2020 22:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sca02/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sca02/</guid>
         <description>本来自己写了一遍，但从网上找到的一个源码分析图。觉得比自己总结的好且更为细致，就直接放过来了。一图胜千言。 https://xie.infoq.cn/article/d342a914b8754dd52f5709b43 服务心跳、服务剔除 这些都与eur</description>
         </item>
         <item>
         <title>nacos注册中心初始化</title>
-        <link>http://localhost:1313/posts/java/sca01/</link>
+        <link>http://localhost:1313/posts/java/springcloud/sca01/</link>
         <pubDate>Mon, 01 Jun 2020 21:00:00 +0800</pubDate>
         
-        <guid>http://localhost:1313/posts/java/sca01/</guid>
+        <guid>http://localhost:1313/posts/java/springcloud/sca01/</guid>
         <description>注册中心启动类就一个springboot应用，看不出什么东西 1 2 3 4 5 6 7 8 @EnableScheduling @SpringBootApplication(scanBasePackages = {&amp;#34;com.alibaba.nacos.naming&amp;#34;, &amp;#34;com.alibaba.nacos.core&amp;#34;}) public class NamingApp { public static void main(String[] args) { SpringApplication.run(NamingApp.class, args); } } 通过官方文档已经一些分析，</description>
         </item>
         

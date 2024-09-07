@@ -371,7 +371,7 @@
 </span></span><span class="line"><span class="cl">-XX:+UseZGC <span class="c1">#使用zgc</span>
 </span></span><span class="line"><span class="cl">-XX:-ZUncommit <span class="c1">#关闭主动归还内存给操作系统</span>
 </span></span><span class="line"><span class="cl">-XX:+ZGenerational <span class="c1">#启用jdk21生产可用的分代zgc算法，会在gc的时候消耗更多的cpu</span>
-</span></span><span class="line"><span class="cl">-XX:+AlwaysPreTouch <span class="c1">#启用内存预分配</span>
+</span></span><span class="line"><span class="cl">-XX:+AlwaysPreTouch <span class="c1">#启用内存预分配，需要内核版本4.3+</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#gc日志记录到/opt/logs/文件名为启动的时间戳，每个日志记录包含时间戳、日志级别、线程id、标签。文件大小限制到50M，达到后创建新的文件继续记录</span>
 </span></span><span class="line"><span class="cl">-Xlog:gc*<span class="o">=</span>info:file<span class="o">=</span>/opt/logs/gc-%t.log:time,level,tid,tags:filesize<span class="o">=</span>50M  
 </span></span><span class="line"><span class="cl"><span class="c1">#发生OOM时dump内存日志</span>
