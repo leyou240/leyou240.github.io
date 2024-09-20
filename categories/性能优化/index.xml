@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>性能优化 on 专注于Java、Golang、软件架构、项目管理</title>
+        <link>http://localhost:1313/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link>
+        <description>Recent content in 性能优化 on 专注于Java、Golang、软件架构、项目管理</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Mon, 20 Jun 2022 21:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>慢sql经验总结</title>
+        <link>http://localhost:1313/posts/project/project03/</link>
+        <pubDate>Mon, 20 Jun 2022 21:00:00 +0800</pubDate>
+        
+        <guid>http://localhost:1313/posts/project/project03/</guid>
+        <description>&lt;p&gt;在过去的工作中，如何在各个环境中（开发、测试、生产）快速准确的发现应用的慢sql，并进行高效的推动，是一个很大的挑战。以下是一些经验&lt;/p&gt;
+&lt;h2 id=&#34;慢sql的定义&#34;&gt;慢sql的定义
+&lt;/h2&gt;&lt;p&gt;我们将执行时间超过1秒的sql都定义为慢sql。同时会导致&lt;/p&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

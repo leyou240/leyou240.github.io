@@ -362,11 +362,13 @@
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
+</span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">-Xmx6g -Xms6g <span class="c1">#堆内存初始化6g</span>
 </span></span><span class="line"><span class="cl">-XX:+UseZGC <span class="c1">#使用zgc</span>
-</span></span><span class="line"><span class="cl">-XX:-ZUncommit <span class="c1">#关闭主动归还内存给操作系统</span>
+</span></span><span class="line"><span class="cl">-XX:-ZUncommit <span class="c1">#关闭将不使用的内存返回给操作系统</span>
+</span></span><span class="line"><span class="cl">-XX:+UseDynamicNumberOfGCThreads <span class="c1">#当开启时，ZGC 会根据GC运行状态（例如GC耗时、堆空余空间、对象分配频率等）由内置的启发式算法自动选择并发阶段的 GC 线程数量（最小为 1，最大为 -XX:ConcGCThreads）。当关闭时，则会固定使用 -XX:ConcGCThreads 数量的线程。</span>
 </span></span><span class="line"><span class="cl">-XX:+ZGenerational <span class="c1">#启用jdk21生产可用的分代zgc算法，会在gc的时候消耗更多的cpu</span>
 </span></span><span class="line"><span class="cl">-XX:+AlwaysPreTouch <span class="c1">#启用内存预分配，需要内核版本4.3+</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#gc日志记录到/opt/logs/文件名为启动的时间戳，每个日志记录包含时间戳、日志级别、线程id、标签。文件大小限制到50M，达到后创建新的文件继续记录</span>
@@ -401,6 +403,8 @@
     >美团</a>: &ldquo;新一代垃圾回收器ZGC的探索与实践&rdquo;</p>
 <p><a class="link" href="https://www.alibabacloud.com/blog/the-past-and-present-of-jdk8-and-jdk17-to-the-future-of-jdk21_599805"  target="_blank" rel="noopener"
     >阿里云</a>:&ldquo;The Past and Present of JDK8 and JDK17 to the Future of JDK21&rdquo;</p>
+<p><a class="link" href="https://mp.weixin.qq.com/mp/wappoc_appmsgcaptcha?poc_token=HEoy4WajA9FystD_j5IgcZrU4wd1JJuKQCS5fbW2&amp;target_url=https%3A%2F%2Fmp.weixin.qq.com%2Fs%2Fy21bzIADQGQ1Vn7a4Wj5rw"  target="_blank" rel="noopener"
+    >Automq</a>：Java ZGC 深度剖析及其在构建低延迟流系统中的实践心得</p>
 
 </section>
 
